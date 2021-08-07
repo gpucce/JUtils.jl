@@ -1,15 +1,3 @@
-function make_doc(args...; point, sizex=10, sizey=10, frames=1:100)
-	ob = Object(
-		frames,
-		(args...) -> thickbox(
-			point=point,
-			sizex=sizex,
-			sizey=sizey,
-			scaler=10)
-		)
-	ob
-end
-
 function make_text(args...;
   body="stdtxt",
   size=200,
@@ -22,7 +10,7 @@ function make_text(args...;
 )
 ob = Object(
   text_frames,
-  (args...) -> gen_text(
+  (args...) -> draw_text(
     body=body,
     size=size,
     pos=pos,
@@ -43,7 +31,7 @@ end
 function make_lamp(args...; pos, r, frames=1:100, show_drawing=false)
   ob = Object(
     frames,
-    (args...) -> lamp(pos - r, r, max_frames, show_drawing=show_drawing),
+    (args...) -> draw_lamp(pos - r, r, max_frames, show_drawing=show_drawing),
     pos
   )
   return ob
@@ -52,7 +40,15 @@ end
 function make_lens(args...; pos, size, frames=1:100)
   ob = Object(
     frames,
-    (args...) -> lens(pos, size),
+    (args...) -> draw_lens(pos=pos, size=size)
   )
   return ob
+end
+
+function make_doc(args...;pos, sizex, sizey, frames=1:100)
+	Object(frames,
+		(args...) -> draw_doc(
+			pos=pos, sizex=sizex, sizey=sizey
+		)
+	)
 end
