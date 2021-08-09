@@ -7,7 +7,6 @@ function moving_object(object; start_point, final_point, frames=1:100)
 			anim_translate(start_point, final_point)
 			)
 	)
-	object
 end
 
 function moving_text(;

@@ -6,6 +6,10 @@ using Javis
 using Random
 using FileIO
 
+import Luxor
+
+const φ = Base.MathConstants.φ
+
 include("Drawings.jl")
 include("Objects.jl")
 include("ActingObjects.jl")
@@ -15,6 +19,6 @@ export moving_object, draw_random_point
 export draw_text, make_text, moving_text
 export draw_continuous_lines!
 export draw_lamp, make_lamp, draw_lens, make_lens
-export draw_doc, make_doc
+export draw_doc, make_doc, draw_banner, make_banner
 
 end

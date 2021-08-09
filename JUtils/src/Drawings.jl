@@ -145,7 +145,7 @@ function draw_lamp(pos, r, max_frames; show_drawing=false)
 	end
 end
 
-function draw_doc(args...; pos=pos, sizex, sizey)
+function draw_doc(args...; pos=pos, sizex, sizey, rng=42)
 
 	setline(2)
 	topleft = pos - Point(sizex÷2, sizey÷2)
@@ -154,7 +154,9 @@ function draw_doc(args...; pos=pos, sizex, sizey)
 	bottomright = pos - Point(-sizex÷2, -sizey÷2)
 	line(topleft, topright, :stroke)
 	line(topleft, bottomleft, :stroke)
-	line(topright, bottomright, :stroke)
+	line(topright, bottomright, :stoke)
+
+  strokepath()
 
 	move(bottomleft)
 	curve(
@@ -165,12 +167,36 @@ function draw_doc(args...; pos=pos, sizex, sizey)
 	plist = pathtopoly()
 	strokepath()
 
-
 	setline(1)
-	n_lines = 5
+	n_lines = 4
 	margin = sizex÷8
 	for i in 1:n_lines
-		if i < n_lines
+    if i == 1
+      Random.seed!(rng)
+      ypos = topleft.y + i*sizey÷n_lines
+      n_dots = 20
+      points = [Point(pos.x - sizex÷2 + 2*sizex÷n_dots, ypos + rand(-8:8))]
+
+      for i in 2:n_dots-2
+        new_p = Point(pos.x - sizex÷2 + i*sizex÷n_dots, ypos + rand(-8:8))
+        push!(points, new_p)
+        line(new_p, points[i-1], :stroke)
+      end
+    elseif i == 2
+      fontsize(sizey÷6)
+      Random.seed!(rng)
+      text(
+        "|" * join(map(x->string(rand(1:9)),1:5), ",") * "|",
+        Point(pos.x, topleft.y + i*sizey÷n_lines), valign=:middle, halign=:center
+        )
+    elseif i == 3
+      fontface("Barlow")
+      fontsize(sizey÷9)
+      text(
+        "Natural Language",
+        Point(pos.x, topleft.y + i*sizey÷n_lines), valign=:middle, halign=:center
+        )
+		elseif i < n_lines
 			line(
 				topleft + Point(margin, i*sizey÷n_lines),
 				topright + Point(-margin, i*sizey÷n_lines),
@@ -178,14 +204,50 @@ function draw_doc(args...; pos=pos, sizex, sizey)
 			)
 		else
 			line(
-				Luxor.intersectlinepoly(
-						topleft + Point(margin, i*sizey÷n_lines),
-						topright + Point(-margin, i*sizey÷n_lines),
-						plist[1]
-					)[1] + Point(margin, - 0.2sizey÷n_lines),
+        topleft + Point(margin, i*sizey÷n_lines - 0.2sizey÷n_lines) + Point(sizex÷2, 0),
 				topright + Point(-margin, i*sizey÷n_lines - 0.2sizey÷n_lines),
 				:stroke
 			)
 		end
 	end
+end
+
+function draw_banner(
+  args...;
+  pos, sizex, sizey, words=["GOOD", "IDEAS"],rng=Random.GLOBAL_RNG,
+)
+
+  setline(2)
+  topleft = pos - Point(sizex÷2, sizey÷2)
+  topright = pos - Point(-sizex÷2, sizey÷2)
+  bottomleft = pos - Point(sizex÷2, -sizey÷2)
+  bottomright = pos - Point(-sizex÷2, -sizey÷2)
+  line(topleft, topright, :stroke)
+  line(topleft, bottomleft, :stroke)
+  line(topright, bottomright, :stoke)
+  line(bottomleft, bottomright, :stroke)
+  banner_xsize = topright.x - topleft.x
+
+  Random.seed!(rng)
+  n_words = length(words)
+  n_postit = sum(length.(words))
+  post_it_size = sizex ÷ (1+maximum(length.(words)))
+  letters_colors = range(HSV(0,10,1), stop=HSV(-360,10,1), length=20)
+  for (idx, word) in enumerate(words)
+    word_length = length(word)
+    for i in 1:word_length
+      letter = string(word[i])
+      r_p = draw_random_point(post_it_size÷4, post_it_size÷4)
+      xpos = topleft.x + i * (banner_xsize ÷ (1 + word_length))
+      ypos = topleft.y + idx * sizey÷(1+n_words)
+      @warn "check" letter xpos
+
+      postit_p = Point(xpos, ypos) + r_p
+      box(postit_p, post_it_size, post_it_size, :stroke)
+      fontsize(post_it_size)
+      sethue(rand(letters_colors))
+      text(letter, postit_p, valign=:middle, halign=:center)
+      sethue("black")
+    end
+  end
 end

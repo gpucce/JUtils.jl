@@ -45,10 +45,26 @@ function make_lens(args...; pos, size, frames=1:100)
   return ob
 end
 
-function make_doc(args...;pos, sizex, sizey, frames=1:100)
-	Object(frames,
-		(args...) -> draw_doc(
-			pos=pos, sizex=sizex, sizey=sizey
+function make_doc(args...;pos, sizey, sizex=sizey/φ, frames=1:100, start_pos=O)
+	ob = Object(
+    frames,
+		(args...) -> draw_doc(pos=pos, sizex=sizex, sizey=sizey),
+    start_pos
+	)
+  return ob
+end
+
+function make_banner(args...; pos, sizex, sizey=sizex/φ, frames=1:100, words=["GOOD", "IDEAS"], rng=42)
+	Random.seed!(rng)
+	ob = Object(
+		frames,
+		(args...)->draw_banner(
+			pos=pos,
+			sizex=sizex,
+			sizey=sizey,
+			words=words,
+			rng=rng,
 		)
 	)
+	return ob
 end
