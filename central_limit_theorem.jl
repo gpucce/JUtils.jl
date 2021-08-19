@@ -40,120 +40,16 @@ gausshist = fit(Histogram, gaussplot, weights(ones(10000)), hist.edges[1])
 @draw begin
 	Luxor.barchart(
 			hist.weights,
-			labels=true,
-			labelfunction = (values, i, lowpos, highpos, barwidth, scaledvalue) -> begin
-				sethue("blue")
-				circle(
-					Point(
-						lowpos.x, 
-						lowpos.y - abs(maximum(values) - lowpos.y) * pdf(gauss, hist.edges[1][i])
-						), 
-					2, 
-					:fill
-				)
-				
-				sethue("black")
-          end
-	)	
+	)
 end
+
 # plot([pdf(gauss, i) for i in hist.edges[1]])
 # bins(hist)
-end
 
-# ╔═╡ 245f8757-020a-4fe5-b7f4-f87f14fc498a
-begin
-	
-n_frames = 100
-n_hists = 100
-n_samples = 10000
-nbins = 100
-	
-# dist = Geometric(0.1)
-# dist = Exponential(10)
-# dist = Beta(6, 0.7)
-# dist = Cauchy(2,0.2)
-# dist = Chernoff()
-dist = Pareto(5)
-
-steps = map(1:n_hists) do n
-	to_histogram = [
-			(mean(rand(dist, n)) - mean(dist)) * sqrt(n)
-			for i in 1:n_samples
-		]
-	hist = fit(Histogram, to_histogram, nbins=100)
-	# hist.weights ./ n_samples, collect(hist.edges[1]), to_histogram
-	hist, to_histogram
-end
-my_video = Video(600, 600)
-
-function ground(args...)
-	background("white")
-	sethue("black")
-end
-	
-Background(1:n_frames, ground)
-
-step_size = n_frames ÷ n_hists
-
-frame_brakes = 1:step_size:n_frames
-
-gauss = Normal(0, var(dist))
-	
-for (frame_n, j) in zip(frame_brakes, steps[1:end-1])
-	
-	Object(frame_n:frame_n + step_size, @JShape begin
-		barchart(j[1].weights,labels=true,
-			boundingbox = BoundingBox(O + (-250, -120), O + (250, 120)),
-			labelfunction = (values, i, lowpos, highpos, barwidth, scaledvalue) -> 					begin
-					
-					minvalue, maxvalue = extrema(values)
-					minbarrange = minvalue - abs(minvalue)
-					maxbarrange = maxvalue + abs(maxvalue)
-						
-					shift = Point(
-						0, 
-						rescale(pdf(gauss, j[1].edges[1][i+1]), minbarrange, maxbarrange) * 230
-						)
-					sethue("blue")
-					circle(
-					lowpos - shift,
-					2, 
-					:fill
-				)
-						
-				sethue("black")
-			end
-				)
-	end)
-		
-	Object(frame_n:frame_n+step_size, @JShape begin
-		fontsize(20)
-		Luxor.text(string(frame_n), Point(100,-100))
-	end)
-		
-	Object(1:n_frames, @JShape begin
-		line(Point(-300, 150), Point(300, 150), :stroke)
-	end)
-end
-	
-render(my_video, framerate=100, pathname="output/CLT.gif")
-	
-end
-
-# ╔═╡ 47055172-57dd-4e66-98c6-28b3da2b40ce
-begin
-
-plo = plot()
-	histogram!(plo, steps[end][2], bins=100, normalize=:probability)
-	plot!(plo, steps[end][1].edges, [0; steps[end][1].weights]./n_samples, lw=4)
-	plot!(plo, steps[end][1].edges, pdf.(gauss, steps[end][1].edges[1]), lw=10)
-
-# scatter!(plo, pdf(Normal(0, std(dist)), steps[end][2][2:end]))
-# 	std(steps[end][3]), std(dist)
 end
 
 # ╔═╡ 05385a8e-8764-4352-9023-1b126a9c7295
-function newbarchart(values;
+function newbarchart(hist, dist;
     boundingbox = BoundingBox(O + (-250, -120), O + (250, 120)),
     bargap=10,
     margin = 5,
@@ -170,10 +66,10 @@ function newbarchart(values;
     end,
     prologfunction = (values, basepoint, minbarrange, maxbarrange, barchartheight) -> ()
     )
-    minvalue, maxvalue = extrema(values)
+    minvalue, maxvalue = extrema(hist.weights)
     barchartwidth  = boxwidth(boundingbox)  - 2bargap - 2margin
     barchartheight = boxheight(boundingbox) - 2margin
-    barwidth = (barchartwidth - 2bargap)/length(values)
+    barwidth = (barchartwidth - 2bargap)/length(hist.weights)
     if barwidth < 0.1
         throw(error("barchart() - bars are too small (< 0.1) at $(barwidth)"))
     end
@@ -185,37 +81,215 @@ function newbarchart(values;
         boxbottomleft(basepoint),
         boxbottomright(basepoint),
         # skip first and last, then take every other one, which is at halfway
-        range(0.0, stop=1.0, length=2length(values) + 1))[2:2:end-1]
+        range(0.0, stop=1.0, length=2length(hist.weights) + 1))[2:2:end-1]
     @layer begin
         if border
             box(boundingbox, :stroke)
         end
-        prologfunction(values, basepoint, minbarrange, maxbarrange, barchartheight)
-        for i in 1:length(values)
-            scaledvalue = rescale(values[i], minbarrange, maxbarrange) * barchartheight
-			scaledvalue = values[i]
+        prologfunction(hist.weights, basepoint, minbarrange, maxbarrange, barchartheight)
+        for i in 1:length(hist.weights)
+            scaledvalue = rescale(hist.weights[i], minbarrange, maxbarrange) * barchartheight
             lowposition = hpositions[i]
             highposition = lowposition - (0, scaledvalue) # -y coord
-            barfunction(values, i, lowposition, highposition, barwidth, scaledvalue)
-            labels && labelfunction(values, i, lowposition, highposition, barwidth, scaledvalue)
+            barfunction(hist.weights, i, lowposition, highposition, barwidth, scaledvalue)
+            labels && labelfunction(hist.weights, i, lowposition, highposition, barwidth, scaledvalue)
 			sethue("blue")
-			circle(lowposition - Point(0, pdf(gauss, steps[end][1].edges[1][i]) * barchartheight), 2, :fill)
+			scaledgaussvalue = rescale(pdf(dist, hist.edges[1][i+1] - hist.edges[1].step.hi/2), minbarrange, maxbarrange) * barchartheight
+			circle(lowposition - (0, scaledgaussvalue), 2, :fill)
 			sethue("black")
         end
     end
     return (positions = hpositions)
 end
 
-# ╔═╡ d136e0d3-27c5-49d2-bfb4-ffb0dd6128cd
-@draw begin
-	newbarchart(steps[end][1].weights)
+# ╔═╡ 245f8757-020a-4fe5-b7f4-f87f14fc498a
+begin
+	
+n_frames = 100
+n_hists = 50
+n_samples = 10000
+nbins = 100
+	
+dist = Geometric(0.1)
+# dist = Exponential(10)
+# dist = Beta(6, 0.7)
+# dist = Cauchy(2,0.2)
+# dist = Chernoff()
+# dist = Pareto(5)
+
+samples = map(1:n_hists) do n
+	to_histogram = map(1:n_samples) do _
+		(mean(rand(dist, n)) - mean(dist)) * sqrt(n)
+	end
 end
+
+steps = map(samples) do sampling
+	hist = fit(Histogram, sampling, weights(ones(length(sampling))), range(minimum(samples[end]), maximum(samples[end]), length=100))
+	hist = StatsBase.normalize(hist, mode=:pdf)
+	hist, sampling
+end
+	
+my_video = Video(600, 600)
+
+function ground(args...)
+	background("white")
+	sethue("black")
+end
+	
+Background(1:n_frames, ground)
+
+step_size = n_frames ÷ n_hists
+
+frame_brakes = 1:step_size:n_frames
+
+gauss = Normal(0, std(dist))
+	
+for (frame_n, j) in zip(frame_brakes, steps[1:end-1])
+	
+	Object(frame_n:frame_n + step_size, @JShape begin
+		newbarchart(j[1], gauss)
+	end)
+		
+	Object(frame_n:frame_n+step_size, @JShape begin
+		fontsize(20)
+		Luxor.text(string(frame_n), Point(100,-100))
+	end)
+		
+	Object(1:n_frames, @JShape begin
+		line(Point(-300, 150), Point(300, 150), :stroke)
+	end)
+end
+	
+render(my_video, framerate=100, pathname="output/CLT.gif")
+	
+end
+
+# ╔═╡ 36a83850-2573-434e-8e07-44457f6d42dc
+function CLT(dist;
+    boundingbox = BoundingBox(O + (-250, -120), O + (250, 120)),
+    bargap=10,
+    margin = 5,
+    border=false,
+    labels=false,
+    labelfunction = (values, i, lowpos, highpos, barwidth, scaledvalue) -> begin
+        label(string(values[i]), :n, highpos, offset=10)
+    end,
+    barfunction =  (values, i, lowpos, highpos, barwidth, scaledvalue) -> begin
+        @layer begin
+            Luxor.setline(barwidth)
+            line(lowpos, highpos, :stroke)
+        end
+    end,
+    prologfunction = (values, basepoint, minbarrange, maxbarrange, barchartheight) -> ()
+    )
+	
+	
+	n_frames = 100
+	n_hists = 50
+	n_samples = 10000
+	nbins = 100
+	
+	samples = map(1:n_hists) do n
+		map(1:n_samples) do _
+		(mean(rand(dist, n)) - mean(dist)) * sqrt(n)
+		end
+	end
+	
+	finalmin, finalmax = extrema(samples[end])
+	
+	steps = map(samples) do sampling
+		hist = fit(Histogram, sampling, 
+			weights(ones(length(sampling))), 
+			range(finalmin, finalmax,length=100)
+		)
+		hist = StatsBase.normalize(hist, mode=:pdf)
+		hist
+	end
+	
+	final_hist = steps[end]
+	
+    my_video = Video(600, 600)
+
+	function ground(args...)
+		background("white")
+		sethue("black")
+	end
+	
+	function mylabelfunction(hist, minbarrange, maxbarrange, barchartheight)
+		(values, i, lowpos, highpos, barwidth, scaledvalue) -> begin
+		sethue("blue")
+		if i <= length(hist.edges[1])
+			scaledgaussvalue = rescale(
+			pdf(Normal(0, std(dist)), hist.edges[1][i+1] - hist.edges[1].step.hi/2),
+			minbarrange, 
+			maxbarrange
+		) * barchartheight
+			circle(lowpos - (0, scaledgaussvalue), 2, :fill)
+		end
+		sethue("black")
+		end
+	end
+	
+	Background(1:n_frames, ground)
+
+	step_size = n_frames ÷ n_hists
+
+	frame_brakes = 1:step_size:n_frames
+
+	gauss = Normal(0, std(dist))
+	
+	for (frame_n, hist) in zip(frame_brakes, steps[2:end])
+		
+		minvalue, maxvalue = extrema(final_hist.weights)
+		barchartheight = boxheight(boundingbox) - 2margin
+		minbarrange = minvalue - abs(minvalue)
+    	maxbarrange = maxvalue + abs(maxvalue)
+		
+		Object(frame_n:frame_n + step_size, @JShape begin
+			barchart(
+				hist.weights,
+				boundingbox=boundingbox,
+				bargap=bargap,
+    			margin=margin,
+    			border=border,
+				labels=true,
+				barfunction=barfunction,
+				labelfunction = mylabelfunction(
+						hist, 
+						minbarrange, 
+						maxbarrange, 
+						barchartheight
+				)
+			)
+			end
+		)
+		
+		Object(frame_n:frame_n+step_size, @JShape begin
+			fontsize(20)
+			counterpoint = Point(100, 0)
+			Luxor.text(string(frame_n ÷ step_size), counterpoint, halign=:center)
+			label("Iteration", :N, counterpoint, offset=20)
+		end)
+		
+		Object(frame_n:frame_n+step_size, @JShape begin
+			fontsize(40)
+			titlepoint = Point(0, -100)
+			Luxor.text("Central Limit Theorem", titlepoint, halign=:center)
+		end)
+	end
+	
+	render(my_video, framerate=100, pathname="output/CLT.gif")
+	
+end
+
+# ╔═╡ 47bcc4fe-a44f-4715-8ed3-bbe00c02f30f
+CLT(Pareto(3.9), boundingbox = BoundingBox(O+(-250, -250),O+(250,250)))
 
 # ╔═╡ Cell order:
 # ╠═5b918be6-0003-11ec-1e1f-534faed7dfe5
 # ╟─08925513-6646-48ac-9fa8-2e48b4a40230
 # ╠═4d489509-80c4-40a6-a182-ce785f322684
 # ╠═245f8757-020a-4fe5-b7f4-f87f14fc498a
-# ╠═47055172-57dd-4e66-98c6-28b3da2b40ce
-# ╠═d136e0d3-27c5-49d2-bfb4-ffb0dd6128cd
-# ╠═05385a8e-8764-4352-9023-1b126a9c7295
+# ╠═47bcc4fe-a44f-4715-8ed3-bbe00c02f30f
+# ╠═36a83850-2573-434e-8e07-44457f6d42dc
+# ╟─05385a8e-8764-4352-9023-1b126a9c7295
