@@ -4,19 +4,31 @@
 using Markdown
 using InteractiveUtils
 
+# This Pluto notebook uses @bind for interactivity. When running this notebook outside of Pluto, the following 'mock version' of @bind gives bound variables a default value (instead of an error).
+macro bind(def, element)
+    quote
+        local el = $(esc(element))
+        global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : missing
+        el
+    end
+end
+
 # ╔═╡ e3a36f34-f16e-11eb-0480-43a3e559f803
 begin
 using Pkg
 Pkg.activate(".")
-using Revise, Javis, Animations, PlutoUI, Random, Colors, FileIO, JUtils
+using Revise, Javis, Animations, PlutoUI, Random, Colors, FileIO, JUtils, Distributions, StatsBase
+φ = Base.MathConstants.φ
 import Luxor
-φ = Base.MathConstants.φ;
 end
 
 # ╔═╡ 3d896c63-b553-49a6-a901-c34688fedeeb
 md"""
 # Test Video
 """
+
+# ╔═╡ d9a4d4e5-16ca-4d26-b18d-6be136ba6ee9
+@bind parole PlutoUI.TextField(default="Ciao")
 
 # ╔═╡ 3bb08101-95c8-4dff-9516-67226c852392
 md"""
@@ -33,12 +45,12 @@ end
 let
 max_frames = 50
 
-test_video = Video(300, 300)
+test_video = Video(350, 350)
 Background(1:max_frames, ground)
-Object(1:max_frames, (args...)-> circle(O, 3, :fill))
+# Object(1:max_frames, (args...)-> circle(O, 3, :fill))
 for i in 1:1
-d = make_banner(pos=Point(0,0), sizex=200, frames=1:max_frames, rng=42, 
-			words=["Fuzzy", "Design"])
+d = make_banner(pos=Point(0,0), sizex=300, sizey=200, frames=1:max_frames, rng=43, 
+			words=split(parole))
 moving_object(d, start_point=Point(0,0), final_point=Point(10,0), frames=25:50)
 end
 render(test_video, pathname="test.gif")
@@ -166,7 +178,8 @@ end
 # ╔═╡ Cell order:
 # ╠═e3a36f34-f16e-11eb-0480-43a3e559f803
 # ╟─3d896c63-b553-49a6-a901-c34688fedeeb
+# ╟─d9a4d4e5-16ca-4d26-b18d-6be136ba6ee9
 # ╟─975c3747-7922-4619-85c9-62bcb0a7a1fe
-# ╟─383c4044-8e9b-42b4-b93b-cb7578ba5dc0
+# ╠═383c4044-8e9b-42b4-b93b-cb7578ba5dc0
 # ╟─3bb08101-95c8-4dff-9516-67226c852392
-# ╠═87ace88b-2fe6-4d01-8c01-f4b8a2c31384
+# ╟─87ace88b-2fe6-4d01-8c01-f4b8a2c31384

@@ -65,7 +65,6 @@ function gen_text(
 			color=red,valign=:middle, halign=:left
 		)
 		
-	# fontface("Barlow Bold")
 	fontface("Barlow")
 	fontsize(size)
 	setfont("Barlow", size)
@@ -78,19 +77,6 @@ end
 my_video = Video(2 * right_end, 2 * bottom_end)
 	
 Background(1:n_frames, ground)
-
-# full_text = Object(1:n_frames, 
-# 			(args...)->gen_text(args..., 
-# 				# size = letter != "4" ? 200 : 150,
-# 				size = 200,
-# 				body = "B4DS", 
-# 				x = 0 + global_margin,
-# 				y = top_margin + global_margin,
-# 				# color = (letter != "4" ? blue : red),
-# 				halign = :center,
-# 				valign = :top
-# 				)
-# 		)
 	
 converter = [1,2,3,4]
 	
@@ -196,7 +182,7 @@ end
 	
 render(
 		my_video,
-		pathname = "B4DS.gif"
+		pathname = "output/B4DS.gif"
 		
 	)
 end
@@ -239,7 +225,7 @@ Object(1:70, (args...)->connector(pos(red_ball), pos(blue_ball), "black"))
 	
 render(
     myvideo;
-    pathname="circle.gif"
+    pathname="output/circle.gif"
 )
 end
 

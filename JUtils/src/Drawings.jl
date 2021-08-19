@@ -214,35 +214,30 @@ end
 
 function draw_banner(
   args...;
-  pos, sizex, sizey, words=["GOOD", "IDEAS"],rng=Random.GLOBAL_RNG,
+  pos, sizex, sizey, words=["SOME", "WORDS"], rng=Random.GLOBAL_RNG
 )
 
   setline(2)
+  box(pos, sizex, sizey, :stroke)
   topleft = pos - Point(sizex÷2, sizey÷2)
   topright = pos - Point(-sizex÷2, sizey÷2)
-  bottomleft = pos - Point(sizex÷2, -sizey÷2)
-  bottomright = pos - Point(-sizex÷2, -sizey÷2)
-  line(topleft, topright, :stroke)
-  line(topleft, bottomleft, :stroke)
-  line(topright, bottomright, :stoke)
-  line(bottomleft, bottomright, :stroke)
   banner_xsize = topright.x - topleft.x
 
   Random.seed!(rng)
   n_words = length(words)
-  n_postit = sum(length.(words))
-  post_it_size = sizex ÷ (1+maximum(length.(words)))
-  letters_colors = range(HSV(0,10,1), stop=HSV(-360,10,1), length=20)
+  post_it_size = sizex ÷ (1 + maximum(length.(words)))
+  # letters_colors = range(HSV(0,10,1), stop=HSV(-360,10,1), length=20)
+  letters_colors = 
   for (idx, word) in enumerate(words)
     word_length = length(word)
     for i in 1:word_length
       letter = string(word[i])
-      r_p = draw_random_point(post_it_size÷4, post_it_size÷4)
-      xpos = topleft.x + i * (banner_xsize ÷ (1 + word_length))
-      ypos = topleft.y + idx * sizey÷(1+n_words)
-      @warn "check" letter xpos
+      postit_step = word_length ÷ 2 + 1
+      even_shift = (1 - (word_length % 2)) * (post_it_size / 2)
+      xpos = pos.x + (i - postit_step) * post_it_size + even_shift
+      ypos = topleft.y + idx * sizey ÷ (1 + n_words)
 
-      postit_p = Point(xpos, ypos) + r_p
+      postit_p = Point(xpos, ypos)
       box(postit_p, post_it_size, post_it_size, :stroke)
       fontsize(post_it_size)
       sethue(rand(letters_colors))
