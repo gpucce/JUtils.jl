@@ -48,6 +48,21 @@ end
 
 end
 
+# ╔═╡ 47bcc4fe-a44f-4715-8ed3-bbe00c02f30f
+JUtils.CLT(Binomial(10, 0.2), boundingbox = BoundingBox(O+(-250, -250),O+(250,250)))
+
+# ╔═╡ 31b29fb2-b52e-4569-96b2-5999b7424bb6
+begin
+c1 = HSV(colorant"firebrick")
+c2 = HSV(colorant"goldenrod1")
+# c2 = HSV(colorant"blue")
+(c1.h, c1.s, c1.v),(c2.h, c2.s, c2.v)
+HSV(260, c2.s, c2.v)
+end
+
+# ╔═╡ b1676337-685a-4759-a771-34a770acf72e
+typeof(Exponential(10)).name.name
+
 # ╔═╡ 05385a8e-8764-4352-9023-1b126a9c7295
 function newbarchart(hist, dist;
     boundingbox = BoundingBox(O + (-250, -120), O + (250, 120)),
@@ -160,12 +175,12 @@ for (frame_n, j) in zip(frame_brakes, steps[1:end-1])
 	end)
 end
 	
-render(my_video, framerate=100, pathname="output/CLT.gif")
+render(my_video, framerate=30, pathname="output/CLT.gif")
 	
 end
 
 # ╔═╡ 36a83850-2573-434e-8e07-44457f6d42dc
-function CLT(dist;
+function myCLT(dist;
     boundingbox = BoundingBox(O + (-250, -120), O + (250, 120)),
     bargap=10,
     margin = 5,
@@ -240,7 +255,7 @@ function CLT(dist;
 	
 	for (frame_n, hist) in zip(frame_brakes, steps[2:end])
 		
-		minvalue, maxvalue = extrema(final_hist.weights)
+		minvalue, maxvalue = extrema(hist.weights)
 		barchartheight = boxheight(boundingbox) - 2margin
 		minbarrange = minvalue - abs(minvalue)
     	maxbarrange = maxvalue + abs(maxvalue)
@@ -282,14 +297,13 @@ function CLT(dist;
 	
 end
 
-# ╔═╡ 47bcc4fe-a44f-4715-8ed3-bbe00c02f30f
-CLT(Pareto(3.9), boundingbox = BoundingBox(O+(-250, -250),O+(250,250)))
-
 # ╔═╡ Cell order:
 # ╠═5b918be6-0003-11ec-1e1f-534faed7dfe5
 # ╟─08925513-6646-48ac-9fa8-2e48b4a40230
 # ╠═4d489509-80c4-40a6-a182-ce785f322684
 # ╠═245f8757-020a-4fe5-b7f4-f87f14fc498a
 # ╠═47bcc4fe-a44f-4715-8ed3-bbe00c02f30f
+# ╠═31b29fb2-b52e-4569-96b2-5999b7424bb6
+# ╠═b1676337-685a-4759-a771-34a770acf72e
 # ╠═36a83850-2573-434e-8e07-44457f6d42dc
 # ╟─05385a8e-8764-4352-9023-1b126a9c7295
