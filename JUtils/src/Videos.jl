@@ -6,8 +6,8 @@ function CLT(dist;
   )
 
 
-  n_frames = 1000
-  n_hists = 1000
+  n_frames = 500
+  n_hists = 500
   n_samples = 10000
 
   c1 = HSV(colorant"goldenrod1")
@@ -34,7 +34,7 @@ function CLT(dist;
 
   gauss = Normal(0, StatsBase.std(dist))
 
-  my_video = Video(600, 600)
+  my_video = Video(600, 500)
 
   function ground(args...)
     background("white")
@@ -123,10 +123,14 @@ function CLT(dist;
 
       sethue(c1)
       fontsize(15)
-      text(string(typeof(dist).name.name), distpoint, halign=:center)
+      text(
+        join([string(typeof(dist).name.name); string(params(dist))], ""),
+        distpoint,
+        halign=:center
+      )
   end
   )
 
-  render(my_video, framerate=30, pathname="output/CLT.gif")
+  render(my_video, framerate=100, pathname="output/CLT.gif")
 
 end
