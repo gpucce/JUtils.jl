@@ -6,8 +6,8 @@ function CLT(dist;
   )
 
 
-  n_frames = 500
-  n_hists = 500
+  n_frames = 700
+  n_hists = 700
   n_samples = 10000
 
   c1 = HSV(colorant"goldenrod1")
@@ -24,13 +24,13 @@ function CLT(dist;
   steps = map(samples) do sampling
     hist = fit(Histogram, sampling,
       weights(ones(length(sampling))),
-      range(finalmin, finalmax,length=100)
+      range(finalmin, finalmax, length=100)
     )
     hist = StatsBase.normalize(hist, mode=:pdf)
     hist
   end
 
-  final_hist = steps[end]
+  
 
   gauss = Normal(0, StatsBase.std(dist))
 
@@ -41,29 +41,58 @@ function CLT(dist;
     sethue("black")
   end
 
-  function mylabelfunction(hist, minbarrange, maxbarrange, barchartheight; color)
+  function moving_gaussian(hist, minbarrange, maxbarrange, barchartheight; color)
     (values, i, lowpos, highpos, barwidth, scaledvalue) -> begin
-    sethue(color)
-    if i <= length(hist.edges[1])
-      scaledgaussvalue = rescale(
-      pdf(gauss, hist.edges[1][i+1] - hist.edges[1].step.hi/2),
-      minbarrange,
-      maxbarrange
-    ) * barchartheight
-      circle(lowpos - (0, scaledgaussvalue), 3, :fill)
+      sethue(color)
+      if i <= length(hist.edges[1])
+        scaledgaussvalue = rescale(
+        pdf(gauss, hist.edges[1][i+1] - hist.edges[1].step.hi/2),
+        minbarrange,
+        maxbarrange
+        ) * barchartheight
+        circle(lowpos - (0, scaledgaussvalue), 3, :fill)
+      end
+      sethue("black")
     end
-    sethue("black")
+  end
+
+  function fixed_gaussian(loc_hist; color)
+    (values, i, lowpos, highpos, barwidth, scaledvalue) -> begin
+    
+      minvalue, maxvalue = extrema(loc_hist.weights)
+      barchartheight = boxheight(boundingbox) - 2margin
+      minbarrange = minvalue - abs(minvalue)
+      maxbarrange = maxvalue + abs(maxvalue)
+    
+      sethue(color)
+      if i <= length(loc_hist.edges[1])
+        scaledgaussvalue = rescale(
+          pdf(gauss, loc_hist.edges[1][i+1] - loc_hist.edges[1].step.hi/2),
+          minbarrange,
+          maxbarrange
+          ) * barchartheight
+        circle(lowpos - (0, scaledgaussvalue), 3, :fill)
+      end
+      
+      tickline(
+          boxbottomleft(boundingbox) - Point(0, margin), 
+          boxbottomright(boundingbox) - Point(0, margin),
+          startnumber = loc_hist.edges[1][1],
+          finishnumber = loc_hist.edges[1][end]
+      )
+
+      sethue("black")
     end
   end
 
   function mybarfunction(;color)
     (values, i, lowpos, highpos, barwidth, scaledvalue) -> begin
-        Luxor.@layer begin
-            sethue(color)
-            Luxor.setline(barwidth)
-            line(lowpos, highpos, :stroke)
-            sethue(color)
-        end
+      Luxor.@layer begin
+        sethue(color)
+        Luxor.setline(barwidth)
+        line(lowpos, highpos, :stroke)
+        sethue(color)
+      end
     end
   end
 
@@ -71,16 +100,18 @@ function CLT(dist;
 
   step_size = n_frames ÷ n_hists
   frame_brakes = 1:step_size:n_frames
-  titlepoint = Point(-50, -100)
+  titlepoint = Point(0, -100)
   distpoint = Point(-200, 0)
-  counterpoint = Point(100, 0)
+  counterpoint = Point(200, 0)
+
+  final_hist = steps[end]
 
   for (frame_n, hist) in zip(frame_brakes, steps[2:end])
 
-    minvalue, maxvalue = extrema(hist.weights)
-    barchartheight = boxheight(boundingbox) - 2margin
-    minbarrange = minvalue - abs(minvalue)
-    maxbarrange = maxvalue + abs(maxvalue)
+    # minvalue, maxvalue = extrema(hist.weights)
+    # barchartheight = boxheight(boundingbox) - 2margin
+    # minbarrange = minvalue - abs(minvalue)
+    # maxbarrange = maxvalue + abs(maxvalue)
 
     Object(frame_n:frame_n + step_size, @JShape begin
       barchart(
@@ -91,15 +122,22 @@ function CLT(dist;
         border=border,
         labels=true,
         barfunction=mybarfunction(color=c1),
-        labelfunction = mylabelfunction(
-            hist,
-            minbarrange,
-            maxbarrange,
-            barchartheight,
+
+        ## Normalizes gaussian at every iteration
+        # labelfunction = moving_gaussian(
+        #     final_hist,
+        #     minbarrange,
+        #     maxbarrange,
+        #     barchartheight,
+        #     color=c2
+        # )
+
+        ## Normalize gaussian using last iteration values
+        labelfunction = fixed_gaussian(
+            final_hist,
             color=c2
         )
       )
-      # sethue("black")
       end
     )
 
@@ -109,6 +147,7 @@ function CLT(dist;
       text(string(frame_n ÷ step_size), counterpoint, halign=:center)
       sethue("black")
     end)
+    
   end
 
   Object(
@@ -132,5 +171,4 @@ function CLT(dist;
   )
 
   render(my_video, framerate=100, pathname="output/CLT.gif")
-
 end
