@@ -104,7 +104,7 @@ function CLT(
     step_size = n_frames ÷ n_hists
     frame_brakes = 1:step_size:n_frames
 
-    # Fix some point where whritings will be shown
+    # Fix some point where writings will be shown
     titlepoint = Point(0, -100)
     distpoint = Point(-200, 0)
     counterpoint = Point(200, 0)
@@ -136,11 +136,9 @@ function CLT(
         Object(
             frame_n:(frame_n + step_size - 1),
             @JShape begin
-                @layer begin
-                    sethue(barcolor)
-                    fontsize(15)
-                    text(string(frame_n ÷ step_size), counterpoint, halign = :center)
-                end
+                sethue(barcolor)
+                fontsize(15)
+                text(string(frame_n ÷ step_size), counterpoint, halign = :center)
             end
         )
     end
@@ -168,5 +166,5 @@ function CLT(
         end
     )
 
-    render(my_video, framerate = 100, pathname = "central_limit_theorem.gif")
+    render(my_video, pathname = "central_limit_theorem.gif")
 end
