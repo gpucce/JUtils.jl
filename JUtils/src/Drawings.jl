@@ -246,3 +246,62 @@ function draw_banner(
     end
   end
 end
+
+
+function draw_roc(pos, tar, nontar, p; c1=colorant"red", c2=colorant"blue", size=300, margin=10)
+	myroc = roc(tar, nontar)
+
+	sens = sensitivity(tar, nontar, p)
+	spec = specificity(tar, nontar, p)
+
+	@layer begin
+	    Luxor.setline(2)
+	    rocpoints = Point.(myroc.pmiss .* size, (myroc.pfa) .* size)
+	    Javis.translate(-midpoint(rocpoints[1], rocpoints[end]) + pos)
+	    
+	    sethue(c1)
+	    first_half = rocpoints[myroc.pmiss .<= sens]
+	    second_half = rocpoints[myroc.pmiss .>= sens]
+	    poly([first_half; second_half[1]], :stroke)
+	    
+	    sethue(c2)
+	    poly(second_half, :stroke)
+	    sethue("black")
+	    
+	    Luxor.setline(1)
+	    line(rocpoints[1], rocpoints[end], :stroke)
+	    
+	    tickline(
+	    	rocpoints[1] + (0, margin), 
+	    	Point(rocpoints[end].x, rocpoints[1].y) + (0, margin)
+	    )
+	    tickline(
+	    	Point(rocpoints[1].x, rocpoints[end].y) + (-margin, 0),
+	    	rocpoints[1] + (-margin, 0),
+	    	startnumber=1,
+	    	finishnumber=0
+	    )
+	    
+	    Luxor.setline(10)
+	    sethue(c1)
+	    sensx = rocpoints[1].x - margin - size / 3
+	    line(
+	    	Point(sensx, rocpoints[1].y),
+	    	Point(sensx, first_half[end].y),
+	    	:stroke
+	    )
+	    Luxor.fontsize(20)
+	    label("Sensitivity", :S, Point(sensx, rocpoints[1].y), offset=10)
+	    
+	    sethue(c2)
+		specx = sensx - size / 3
+	    line(
+	    	Point(specx, rocpoints[1].y),
+	    	Point(specx, rocpoints[1].y - spec * size),
+	    	:stroke
+	    )
+    
+	    # Luxor.fontsize(20)
+	    label("Specificity", :S, Point(specx, rocpoints[1].y), offset=10)
+	end
+end
