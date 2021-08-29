@@ -297,7 +297,7 @@ function draw_roc(pos, tar, nontar, p; c1=colorant"red", c2=colorant"blue", size
 		specx = sensx - size / 3
 	    line(
 	    	Point(specx, rocpoints[1].y),
-	    	Point(specx, rocpoints[1].y - spec * size),
+	    	Point(specx, rocpoints[1].y - (second_half[end].x - second_half[1].x)),
 	    	:stroke
 	    )
     
