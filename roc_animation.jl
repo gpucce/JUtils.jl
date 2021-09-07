@@ -67,7 +67,8 @@ my_video = Video(800, 800)
 
 Background(1:n_frames, ground)
 
-
+max_pred = maximum(preds)
+	
 for (frame_n, p) in zip(1:step_size:n_frames, range(0.0, 1.0, length=n_steps))
 	Object(
 		frame_n : (frame_n + step_size - 1),
@@ -82,27 +83,22 @@ margin = 50
 Object(
 	1:n_frames,
 	@JShape begin
-		rocpoints = Point.(myroc.pmiss .* 300, myroc.pfa .* 300)
-		# bottomleft = Point(rocpoints[1].x, rocpoints[end].y - margin)
+		rocpoints = Point.(myroc.pmiss .* size, myroc.pfa .* size)
 		Javis.translate(-midpoint(rocpoints[1], rocpoints[end]))
-		bottomleft = Point(rocpoints[1].x - margin - 200, rocpoints[end].y - margin)
-		topright = Point(rocpoints[end].x, bottomleft.y - maximum(preds .* 300))
+		bottomleft = Point(rocpoints[1].x, rocpoints[end].y - margin)
+		topright = Point(rocpoints[end].x, bottomleft.y - margin - max_pred * size / 2)
 		Javis.translate(global_shift)
 		newidxs = sortperm(preds)
 		barchart(
 			preds[newidxs],
 			boundingbox = Luxor.BoundingBox([bottomleft, topright]),
-			# border=true,
 			margin=0,
 			barfunction = (values, i, lowpos, highpos, barwidth, scaledvalue) -> begin
             @layer begin
-				height = (topright.y - bottomleft.y) / 2
-				y[newidxs][i] ? sethue("red") : sethue("blue")
-                # circle(highpos, 3, :fill)
+				height = (topright.y - bottomleft.y)
+				y[newidxs][i] ? sethue("blue") : sethue("red")
 				circle(
-					Point(lowpos.x, lowpos.y + values[i] * height),
-					3, 
-					:fill
+					Point(lowpos.x, lowpos.y + values[i] * height), 3, :fill
 				)
             end
         end
@@ -114,34 +110,49 @@ for (frame_n, p) in zip(1:step_size:n_frames, range(0.0, 1.0, length=n_steps))
 	Object(
 		frame_n : (frame_n + step_size - 1),
 		@JShape begin
-			rocpoints = Point.(myroc.pmiss .* 300, myroc.pfa .* 300)
-			# bottomleft = Point(rocpoints[1].x, rocpoints[end].y - margin)
+			rocpoints = Point.(myroc.pmiss .* size, myroc.pfa .* size)
 			Javis.translate(-midpoint(rocpoints[1], rocpoints[end]))
 			Javis.translate(global_shift)
-			bottomleft = Point(rocpoints[1].x - margin - 200, rocpoints[end].y - margin)
-			topright = Point(rocpoints[end].x, bottomleft.y - maximum(preds .* 300))
+			bottomleft = Point(rocpoints[1].x, rocpoints[end].y - margin)
+			topright = Point(
+				rocpoints[end].x, bottomleft.y - max_pred * size / 2 - margin
+			)
 			
 			bottomright = Point(topright.x, bottomleft.y)
 			
 			line(
 				bottomleft, 
-				Point(bottomleft.x, midpoint(bottomleft, topright).y - margin)
+				Point(bottomleft.x, topright.y - margin)
 			)
 			line(bottomleft, Point(topright.x + margin, bottomleft.y))
 				
-			height = (topright.y - bottomleft.y) / 2
+			height = (topright.y - bottomleft.y)
 			shift = p * height
 			line(
-				bottomleft + (0, shift) - (0,3), 
-				bottomright + (0, shift) - (0,3), :stroke
+				bottomleft + (0, shift), 
+				bottomright + (0, shift), :stroke
 			)
-			setcolor(sethue("red")..., 0.4)
-			box(bottomleft, bottomright + (0, shift) - (0, 3), :fill)
 			setcolor(sethue("blue")..., 0.4)
-			box(bottomleft + (0, shift) - (0, 3), bottomright + (0, height) - (0, 3), :fill)
+			box(bottomleft, bottomright + (0, shift), :fill)
+			setcolor(sethue("red")..., 0.4)
+			box(bottomleft + (0, shift), bottomright + (0, height), :fill)
 		end
 	)
 end
+
+# Object(
+# 	1:n_frames,
+# 	@JShape begin
+# 		rocpoints = Point.(myroc.pmiss .* size, myroc.pfa .* size) #.- (0, margin)
+# 		Javis.translate(-midpoint(rocpoints[1], rocpoints[end]))
+# 		Javis.translate(global_shift)
+# 		bottomleft = Point(rocpoints[1].x, rocpoints[end].y - margin)
+# 		topright = Point(
+# 			rocpoints[end].x, bottomleft.y - max_pred * size - margin
+# 		)
+# 		box(topright - (2size/3, 0), bottomleft - (2size/3, 0), :stroke)
+# 	end
+# )
 	
 render(my_video, pathname="output/roc_animation.gif")
 end

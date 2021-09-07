@@ -37,7 +37,7 @@ Select the distribution $(@bind dist Select(collect(keys(converter)), default="b
 
 # ╔═╡ d3ed0756-5fdf-4eba-a8ed-7d944acc079d
 md"""
-Select the distribution Parameters $(@bind param NumberField(0.0:0.1:5.0, default=0.1))
+Select the distribution Parameters $(@bind param NumberField(0.0:0.1:5.0, default=0.3))
 """
 
 # ╔═╡ e8fef37b-e0a7-42f3-89a7-414d61092c6e
@@ -52,7 +52,8 @@ param_dist = converter[dist](param)
 begin
 start && JUtils.CLT(
 		param_dist, 
-		boundingbox = BoundingBox(O+(-250, -300), O+(250,200))
+		boundingbox = BoundingBox(O+(-250, -300), O+(250,200)),
+		pathname="output/central_limit_theorem.gif"
 	)
 end
 

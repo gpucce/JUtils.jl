@@ -2,6 +2,7 @@ function CLT(
     dist;
     boundingbox = BoundingBox(O + (-250, -120), O + (250, 120)),
     margin = 5,
+    pathname="central_limit_theorem"
 )
 
     function ground(args...)
@@ -120,6 +121,7 @@ function CLT(
                 barchart(
                     hist.weights,
                     boundingbox = boundingbox,
+                    margin=margin,
                     labels = true,
 
                     # Provide the hist_bar we defined as the barfunction 
@@ -166,5 +168,6 @@ function CLT(
         end
     )
 
-    render(my_video, pathname = "central_limit_theorem.gif")
+    
+    render(my_video, pathname=pathname)
 end
