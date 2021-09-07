@@ -60,7 +60,7 @@ Object(
 		end
 		)
 	
-render(my_video, pathname="output/circle_area.gif")
+render(my_video, pathname="../output/circle_area.gif")
 end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001

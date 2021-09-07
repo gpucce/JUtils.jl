@@ -139,22 +139,8 @@ for (frame_n, p) in zip(1:step_size:n_frames, range(0.0, 1.0, length=n_steps))
 		end
 	)
 end
-
-# Object(
-# 	1:n_frames,
-# 	@JShape begin
-# 		rocpoints = Point.(myroc.pmiss .* size, myroc.pfa .* size) #.- (0, margin)
-# 		Javis.translate(-midpoint(rocpoints[1], rocpoints[end]))
-# 		Javis.translate(global_shift)
-# 		bottomleft = Point(rocpoints[1].x, rocpoints[end].y - margin)
-# 		topright = Point(
-# 			rocpoints[end].x, bottomleft.y - max_pred * size - margin
-# 		)
-# 		box(topright - (2size/3, 0), bottomleft - (2size/3, 0), :stroke)
-# 	end
-# )
 	
-render(my_video, pathname="output/roc_animation.gif")
+render(my_video, pathname="../output/roc_animation.gif")
 end
 
 # ╔═╡ Cell order:

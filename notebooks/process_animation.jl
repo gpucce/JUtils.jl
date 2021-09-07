@@ -171,7 +171,7 @@ act!(banner, Action(1:stops[1], appear(:fade)))
 	
 render(
 		video,
-		pathname="output/process_animation.gif"	
+		pathname="../output/process_animation.gif"	
 	)
 end
 

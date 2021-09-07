@@ -53,7 +53,7 @@ begin
 start && JUtils.CLT(
 		param_dist, 
 		boundingbox = BoundingBox(O+(-250, -300), O+(250,200)),
-		pathname="output/central_limit_theorem.gif"
+		pathname="../output/central_limit_theorem.gif"
 	)
 end
 
