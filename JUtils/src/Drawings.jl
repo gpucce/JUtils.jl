@@ -226,8 +226,7 @@ function draw_banner(
   Random.seed!(rng)
   n_words = length(words)
   post_it_size = sizex ÷ (1 + maximum(length.(words)))
-  # letters_colors = range(HSV(0,10,1), stop=HSV(-360,10,1), length=20)
-  letters_colors = 
+  letters_colors = range(HSV(0,10,1), stop=HSV(-360,10,1), length=20)
   for (idx, word) in enumerate(words)
     word_length = length(word)
     for i in 1:word_length

@@ -54,7 +54,7 @@ function make_doc(args...;pos, sizey, sizex=sizey/φ, frames=1:100, start_pos=O)
   return ob
 end
 
-function make_banner(args...; pos, sizex, sizey=sizex/φ, frames=1:100, words=["GOOD", "IDEAS"], rng=42)
+function make_banner(args...; pos, sizex, sizey=sizex/φ, frames=1:100, words=["SOME", "IDEAS"], rng=42)
 	Random.seed!(rng)
 	ob = Object(
 		frames,
