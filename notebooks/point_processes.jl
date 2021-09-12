@@ -81,7 +81,7 @@ circles_video = Video(width, height)
 Background(1:n_frames, ground)
 make_point_process(λ, n_frames=n_frames, width=width, height=height)
 	
-render(circles_video)
+render(circles_video, pathname="../output/poisson_point_process.gif")
 end
 
 # ╔═╡ c8d4652e-df15-4c21-88af-14ddd78a9f88
@@ -111,7 +111,7 @@ for point in final_points
 	end
 end
 
-render(circles_video)
+render(circles_video, pathname="../output/4_poisson_point_process.gif")
 end
 
 # ╔═╡ 5aaec46b-156e-4881-90cb-77e6f84c9e09
@@ -170,7 +170,7 @@ map(enumerate(eachcol(radiuses_bis))) do (idx, r_s)
 	end
 end
 	
-v = render(circles_video)
+v = render(circles_video, pathname="../output/matern1_point_process.gif")
 end
 
 # ╔═╡ 3d29cbd9-2d4f-45a4-918d-2302822fc593
@@ -217,11 +217,11 @@ map(enumerate(eachcol(radiuses))) do (idx, r_s)
 	end
 end
 	
-render(circles_video)
+render(circles_video, pathname="../output/boulean_point_process_with.gif")
 end
 
 # ╔═╡ Cell order:
-# ╠═83b52b3e-12e2-11ec-050b-0d5b599be67e
+# ╟─83b52b3e-12e2-11ec-050b-0d5b599be67e
 # ╟─ecbdf12c-5c52-4325-88ed-192caf0818ea
 # ╟─461353a2-02de-4201-8f05-4768c619678c
 # ╟─c8d4652e-df15-4c21-88af-14ddd78a9f88
