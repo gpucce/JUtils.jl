@@ -33,6 +33,9 @@ let
 	end width height
 end
 
+# ╔═╡ 051b59c2-7b24-4dd3-8db7-6e184220b314
+
+
 # ╔═╡ 87e9bdcc-23e5-4d62-93c2-56f94a803f74
 function _draw_point_process(λ=0.0002; width = 500, height = 300)
 	hwidth = width÷2
@@ -53,14 +56,16 @@ end
 function make_point_process(λ; n_frames, width=500, height=300)
 	points = _draw_point_process(λ, width=width, height=height)
 	
-	circles = map(points) do c
-		color = RGBA(randomhue()..., 0.4)
-		JCircle(c, 14, action=:fill, color=color)
+	circles = map(enumerate(points)) do (idx, c)
+		color = RGBA(randomhue()..., 0.6)
+		Object(
+			idx:n_frames,
+			(args...) -> begin
+				setcolor(color)
+				circle(c, 14, :fill)
+			end
+		)
 	end
-	
-	map(enumerate(circles)) do (idx, circ)
-		Object(idx:n_frames, circ)
-	end 
 end
 
 # ╔═╡ 1cda21d0-ecb2-4baa-b220-57d976a7f948
@@ -119,8 +124,6 @@ begin
 width = 500
 height = 300
 λ = 0.0005
-
-Random.seed!(1234)
 	
 points = _draw_point_process(λ, width=width, height=height)	
 n_frames = 500
@@ -147,15 +150,23 @@ end...)
 	
 radiuses_bis = deepcopy(radiuses)
 	
-radiuses_at_first = deepcopy(radiuses)
-	
 for i in 1:size(radiuses_bis,1)
 	mask = all(map(Base.product(1:n_points, 1:n_points)) do (x, y)
+		# do_intersect = intersection2circles(
+		# 		points[x], 
+		# 		radiuses_bis[i, x], 
+		# 		points[y], 
+		# 		radiuses_bis[i, y]
+		# 	) == 0.0
 		if x == y 
 			true
-		else !(intersection2circles(
-			points[x], radiuses_bis[i, x], points[y], radiuses_bis[i, y]
-		) != 0.0)
+		else
+			intersection2circles(
+				points[x], 
+				radiuses_bis[i, x], 
+				points[y], 
+				radiuses_bis[i, y]
+			) == 0.0
 		end
 	end, dims=1)
 	radiuses_bis[i+1:end, :] = radiuses_bis[i+1:end, :] .* mask
@@ -164,13 +175,15 @@ end
 Background(1:n_frames, ground)
 
 map(enumerate(eachcol(radiuses_bis))) do (idx, r_s)
-	col = RGBA(randomhue()..., 0.3)
+	col = RGBA(randomhue()..., 0.6)
 	map(enumerate(r_s)) do (tₙ, r)
 		Object(
 			tₙ:tₙ, 
 			(args...)->begin
 				setcolor(col)
 				circle(points[idx], r, :fill)
+				sethue("black")
+				circle(points[idx], r, :stroke)
 			end
 		)
 	end
@@ -237,8 +250,9 @@ end
 # ╟─ecbdf12c-5c52-4325-88ed-192caf0818ea
 # ╟─461353a2-02de-4201-8f05-4768c619678c
 # ╟─c8d4652e-df15-4c21-88af-14ddd78a9f88
-# ╟─5aaec46b-156e-4881-90cb-77e6f84c9e09
+# ╠═5aaec46b-156e-4881-90cb-77e6f84c9e09
+# ╠═051b59c2-7b24-4dd3-8db7-6e184220b314
 # ╟─3d29cbd9-2d4f-45a4-918d-2302822fc593
-# ╟─32f03626-aa06-491d-be0b-4d7ebd7466d0
+# ╠═32f03626-aa06-491d-be0b-4d7ebd7466d0
 # ╟─87e9bdcc-23e5-4d62-93c2-56f94a803f74
-# ╠═1cda21d0-ecb2-4baa-b220-57d976a7f948
+# ╟─1cda21d0-ecb2-4baa-b220-57d976a7f948
