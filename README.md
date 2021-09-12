@@ -3,7 +3,7 @@
 ## A Gallery of animations made with the awesome [Javis Library](https://github.com/Wikunia/Javis.jl)
 
 
-| Point processses                                    |                                        |
+| Point processes                                    |                                        |
 |:-------------------------------------|:---------------------------------------|
 |![](output/poisson_point_process.gif) |![](output/4_poisson_point_process.gif)|
 |![](output/boulean_point_process.gif) |![](output/matern1_point_process.gif)|
