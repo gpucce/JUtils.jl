@@ -54,7 +54,7 @@ function make_point_process(λ; n_frames, width=500, height=300)
 	points = _draw_point_process(λ, width=width, height=height)
 	
 	circles = map(points) do c
-		color = RGB(randomhue()...)
+		color = RGBA(randomhue()..., 0.4)
 		JCircle(c, 14, action=:fill, color=color)
 	end
 	
@@ -65,8 +65,8 @@ end
 
 # ╔═╡ 1cda21d0-ecb2-4baa-b220-57d976a7f948
 function ground(args...)
-	background("black")
-	sethue("white")
+	background("white")
+	sethue("black")
 end
 
 # ╔═╡ 461353a2-02de-4201-8f05-4768c619678c
@@ -164,9 +164,15 @@ end
 Background(1:n_frames, ground)
 
 map(enumerate(eachcol(radiuses_bis))) do (idx, r_s)
-	col = RGB(randomhue()...)
+	col = RGBA(randomhue()..., 0.3)
 	map(enumerate(r_s)) do (tₙ, r)
-		Object(tₙ:tₙ, JCircle(points[idx], r, action=:fill, color=col))
+		Object(
+			tₙ:tₙ, 
+			(args...)->begin
+				setcolor(col)
+				circle(points[idx], r, :fill)
+			end
+		)
 	end
 end
 	
@@ -179,7 +185,7 @@ width = 500
 height = 300
 λ = 0.0005
 
-Random.seed!(1234)
+# Random.seed!(1234)
 	
 points = _draw_point_process(λ, width=width, height=height)	
 n_frames = 500
@@ -211,9 +217,15 @@ radiuses_at_first = deepcopy(radiuses)
 Background(1:n_frames, ground)
 
 map(enumerate(eachcol(radiuses))) do (idx, r_s)
-	col = RGB(randomhue()...)
+	col = RGBA(randomhue()..., 0.6)
 	map(enumerate(r_s)) do (tₙ, r)
-		Object(tₙ:tₙ, JCircle(points[idx], r, action=:fill, color=col))
+		Object(
+			tₙ:tₙ, 
+			(args...)->begin
+				setcolor(col)
+				circle(points[idx], r, :fill)
+			end
+		)
 	end
 end
 	
@@ -229,4 +241,4 @@ end
 # ╟─3d29cbd9-2d4f-45a4-918d-2302822fc593
 # ╟─32f03626-aa06-491d-be0b-4d7ebd7466d0
 # ╟─87e9bdcc-23e5-4d62-93c2-56f94a803f74
-# ╟─1cda21d0-ecb2-4baa-b220-57d976a7f948
+# ╠═1cda21d0-ecb2-4baa-b220-57d976a7f948
