@@ -7,7 +7,7 @@ using InteractiveUtils
 # ╔═╡ b17843a0-05ae-11ec-1825-8b2b03bd5811
 begin
 using Pkg
-Pkg.activate(".")
+Pkg.activate("..")
 using Revise
 using Javis
 using JUtils

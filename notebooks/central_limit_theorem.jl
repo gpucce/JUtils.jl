@@ -16,7 +16,7 @@ end
 # ╔═╡ 5b918be6-0003-11ec-1e1f-534faed7dfe5
 begin
 using Pkg
-Pkg.activate(".")
+Pkg.activate("..")
 using Revise, Javis, Distributions, StatsBase, JUtils, Random, Colors, FileIO, PlutoUI, Plots
 import Luxor
 end

@@ -16,7 +16,7 @@ end
 # ╔═╡ e3a36f34-f16e-11eb-0480-43a3e559f803
 begin
 using Pkg
-Pkg.activate(".")
+Pkg.activate("..")
 using Revise, Javis, Animations, PlutoUI, Random, Colors, FileIO, JUtils, Distributions, StatsBase
 φ = Base.MathConstants.φ
 import Luxor
@@ -43,17 +43,17 @@ end
 
 # ╔═╡ 975c3747-7922-4619-85c9-62bcb0a7a1fe
 let
-max_frames = 50
+# max_frames = 50
 
-test_video = Video(350, 350)
-Background(1:max_frames, ground)
-# Object(1:max_frames, (args...)-> circle(O, 3, :fill))
-for i in 1:1
-d = make_banner(pos=Point(0,0), sizex=300, sizey=200, frames=1:max_frames, rng=43, 
-			words=split(parole))
-moving_object(d, start_point=Point(0,0), final_point=Point(10,0), frames=25:50)
-end
-render(test_video, pathname="test.gif")
+# test_video = Video(350, 350)
+# Background(1:max_frames, ground)
+# # Object(1:max_frames, (args...)-> circle(O, 3, :fill))
+# for i in 1:1
+# d = make_banner(pos=Point(0,0), sizex=300, sizey=200, frames=1:max_frames, rng=43, 
+# 			words=split(parole))
+# moving_object(d, start_point=Point(0,0), final_point=Point(10,0), frames=25:50)
+# end
+# render(test_video, pathname="test.gif")
 end
 
 # ╔═╡ 383c4044-8e9b-42b4-b93b-cb7578ba5dc0

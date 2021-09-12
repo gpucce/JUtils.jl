@@ -45,8 +45,8 @@ end
 
 function draw_random_point(width, height)
   Point(
-    Random.rand(-width:width),
-    Random.rand(-height:height)
+    Random.rand(-width÷2:width÷2),
+    Random.rand(-height÷2:height÷2)
   )
 end
 
@@ -214,7 +214,7 @@ end
 
 function draw_banner(
   args...;
-  pos, sizex, sizey, words=["SOME", "WORDS"], rng=Random.GLOBAL_RNG
+  pos, sizex, sizey, words=["NEW", "WORDS"], rng=Random.GLOBAL_RNG
 )
 
   setline(2)
