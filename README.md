@@ -1,6 +1,6 @@
 # JUtils.jl
 
-A Gallery of animations made with the awesome [Javis](https://github.com/Wikunia/Javis.jl)
+## A Gallery of animations made with the awesome [Javis Library](https://github.com/Wikunia/Javis.jl)
 
 
 | Point processses                                    |                                        |

@@ -99,7 +99,7 @@ function CLT(
     # Define the gaussian distribution where they should converge
     gauss = Normal(0, StatsBase.std(dist))
 
-    my_video = Video(600, 500)
+    my_video = Video(800, 800)
     Background(1:n_frames, ground)
 
     step_size = n_frames ÷ n_hists
