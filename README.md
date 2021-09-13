@@ -1,4 +1,4 @@
-# JUtils.jl  A Gallery of animations made with the awesome [Javis Library](https://github.com/Wikunia/Javis.jl)
+# JUtils.jl Utility functions for the awesome [Javis Library](https://github.com/Wikunia/Javis.jl) and some ready to use animations
 
 
 ## Point processes 
