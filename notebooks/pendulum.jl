@@ -8,7 +8,7 @@ using InteractiveUtils
 begin
 using Pkg
 Pkg.activate("..")
-using Javis, JUtils, Animations, PlutoUI, Plots
+using Javis, JUtils, Animations, PlutoUI, Plots, LaTeXStrings
 end
 
 # ╔═╡ b3c04a1d-41d3-458f-8624-3cb6c114f210
@@ -68,8 +68,12 @@ end
 
 Object(1:n_frames, JLine(basepoint - (radius, 0), basepoint + (radius, 0), color="white"))
 Object(1:n_frames, JLine(basepoint, basepoint + (0, radius), color="white"))
-	
 Object(1:n_frames, JCircle(basepoint, 10, action=:fill, color="blue"))
+	
+Object(1:n_frames, (args...) -> begin
+		fontsize(40)
+		label("exp(-bt/2)Cos(10t)", :N, Point(0, -100))
+	end)
 	
 v = render(pendulum_video, pathname="../output/pendulum.gif", framerate=15)
 end
@@ -78,7 +82,7 @@ end
 plot(0:0.01:2, motion.(0:0.01:2))
 
 # ╔═╡ Cell order:
-# ╟─8ff88bf0-14cb-11ec-2f1c-8f7745e8a6b2
+# ╠═8ff88bf0-14cb-11ec-2f1c-8f7745e8a6b2
 # ╟─b3c04a1d-41d3-458f-8624-3cb6c114f210
-# ╟─42d0c661-344f-4358-869d-cf5929056392
+# ╠═42d0c661-344f-4358-869d-cf5929056392
 # ╟─e4d49656-5ebb-4b51-b6cc-b2a5209a904b

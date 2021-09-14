@@ -232,7 +232,7 @@ map(enumerate(eachcol(radiuses))) do (idx, r_s)
 end
 
 circles_video.background_frames = reverse(circles_video.background_frames)
-render(circles_video, pathname="../output/boolean_point_process.gif", reverse_animation=true)
+render(circles_video, pathname="../output/boolean_point_process.gif")
 end
 
 # ╔═╡ Cell order:
