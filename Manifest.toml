@@ -299,9 +299,9 @@ version = "0.3.1"
 
 [[FFTW]]
 deps = ["AbstractFFTs", "FFTW_jll", "LinearAlgebra", "MKL_jll", "Preferences", "Reexport"]
-git-tree-sha1 = "d7ba5d3df9453b3516ebdd341db238e6e67b94ff"
+git-tree-sha1 = "463cb335fa22c4ebacfd1faba5fde14edb80d96c"
 uuid = "7a1cc6ca-52ef-59f5-83cd-3a7055c09341"
-version = "1.4.4"
+version = "1.4.5"
 
 [[FFTW_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -673,7 +673,7 @@ version = "0.21.2"
 
 [[Javis]]
 deps = ["Animations", "Cairo", "FFMPEG", "Gtk", "GtkReactive", "Hungarian", "ImageIO", "ImageMagick", "Images", "Interact", "LaTeXStrings", "LightXML", "Luxor", "ProgressMeter", "Random", "Statistics", "VideoIO"]
-git-tree-sha1 = "bd8b23bd0f7382aaddb5332d92e692a8ee1e8db3"
+path = "../fork_Javis.jl"
 uuid = "78b212ba-a7f9-42d4-b726-60726080707e"
 version = "0.6.2"
 
@@ -697,9 +697,9 @@ version = "0.8.4"
 
 [[Knockout]]
 deps = ["JSExpr", "JSON", "Observables", "Test", "WebIO"]
-git-tree-sha1 = "8b5552a7a9efc2b0565e2256c919651e6f4e7931"
+git-tree-sha1 = "deb74017e1061d76050ff68d219217413be4ef59"
 uuid = "bcebb21b-c2e3-54f8-a781-646b90f6d2cc"
-version = "0.2.4"
+version = "0.2.5"
 
 [[LAME_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1514,9 +1514,9 @@ version = "1.18.0+4"
 
 [[WebIO]]
 deps = ["AssetRegistry", "Base64", "Distributed", "FunctionalCollections", "JSON", "Logging", "Observables", "Pkg", "Random", "Requires", "Sockets", "UUIDs", "WebSockets", "Widgets"]
-git-tree-sha1 = "adc25e225bc334c7df6eec3b39496edfc451cc38"
+git-tree-sha1 = "5fe32e4086d49f7ab9b087296742859f3ae6d62a"
 uuid = "0f1e0344-ec1d-5b48-a673-e5cf874b6c29"
-version = "0.8.15"
+version = "0.8.16"
 
 [[WebSockets]]
 deps = ["Base64", "Dates", "HTTP", "Logging", "Sockets"]

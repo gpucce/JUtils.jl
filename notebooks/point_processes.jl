@@ -33,8 +33,10 @@ let
 	end width height
 end
 
-# ╔═╡ 051b59c2-7b24-4dd3-8db7-6e184220b314
-
+# ╔═╡ 6dfdaa6d-9f79-4247-9fde-0b410cf6eef2
+begin
+Javis.CURRENT_VIDEO
+end
 
 # ╔═╡ 87e9bdcc-23e5-4d62-93c2-56f94a803f74
 function _draw_point_process(λ=0.0002; width = 500, height = 300)
@@ -70,7 +72,7 @@ end
 
 # ╔═╡ 1cda21d0-ecb2-4baa-b220-57d976a7f948
 function ground(args...)
-	background("white")
+	Javis.background("white")
 	sethue("black")
 end
 
@@ -151,24 +153,16 @@ end...)
 radiuses_bis = deepcopy(radiuses)
 	
 for i in 1:size(radiuses_bis,1)
-	mask = all(map(Base.product(1:n_points, 1:n_points)) do (x, y)
-		# do_intersect = intersection2circles(
-		# 		points[x], 
-		# 		radiuses_bis[i, x], 
-		# 		points[y], 
-		# 		radiuses_bis[i, y]
-		# 	) == 0.0
-		if x == y 
-			true
-		else
-			intersection2circles(
-				points[x], 
-				radiuses_bis[i, x], 
-				points[y], 
-				radiuses_bis[i, y]
-			) == 0.0
-		end
-	end, dims=1)
+	
+	future_mask = map(Base.product(1:n_points, 1:n_points)) do (x, y)
+		intersect = intersection2circles(
+			points[x], radiuses_bis[i, x], points[y], radiuses_bis[i, y]
+		) != 0.0
+			
+		(x == y) | !intersect | (radiuses_bis[i, x] <= 1)
+	end
+	mask = all(future_mask, dims=1)
+		
 	radiuses_bis[i+1:end, :] = radiuses_bis[i+1:end, :] .* mask
 end
 	
@@ -241,8 +235,9 @@ map(enumerate(eachcol(radiuses))) do (idx, r_s)
 		)
 	end
 end
-	
-render(circles_video, pathname="../output/boulean_point_process_with.gif")
+
+circles_video.background_frames = reverse(circles_video.background_frames)
+render(circles_video, pathname="../output/boulean_point_process_with.gif", reverse_animation=true)
 end
 
 # ╔═╡ Cell order:
@@ -251,8 +246,8 @@ end
 # ╟─461353a2-02de-4201-8f05-4768c619678c
 # ╟─c8d4652e-df15-4c21-88af-14ddd78a9f88
 # ╟─5aaec46b-156e-4881-90cb-77e6f84c9e09
-# ╠═051b59c2-7b24-4dd3-8db7-6e184220b314
-# ╟─3d29cbd9-2d4f-45a4-918d-2302822fc593
-# ╠═32f03626-aa06-491d-be0b-4d7ebd7466d0
+# ╠═3d29cbd9-2d4f-45a4-918d-2302822fc593
+# ╠═6dfdaa6d-9f79-4247-9fde-0b410cf6eef2
+# ╟─32f03626-aa06-491d-be0b-4d7ebd7466d0
 # ╟─87e9bdcc-23e5-4d62-93c2-56f94a803f74
-# ╟─1cda21d0-ecb2-4baa-b220-57d976a7f948
+# ╠═1cda21d0-ecb2-4baa-b220-57d976a7f948
