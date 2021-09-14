@@ -27,15 +27,9 @@ let
 			end
 		end
 		map(points) do c
-			# randomcolor()
 			circle(Point(c), 1, :fill)
 		end
 	end width height
-end
-
-# ╔═╡ 6dfdaa6d-9f79-4247-9fde-0b410cf6eef2
-begin
-Javis.CURRENT_VIDEO
 end
 
 # ╔═╡ 87e9bdcc-23e5-4d62-93c2-56f94a803f74
@@ -237,7 +231,7 @@ map(enumerate(eachcol(radiuses))) do (idx, r_s)
 end
 
 circles_video.background_frames = reverse(circles_video.background_frames)
-render(circles_video, pathname="../output/boulean_point_process_with.gif", reverse_animation=true)
+render(circles_video, pathname="../output/boolean_point_process.gif", reverse_animation=true)
 end
 
 # ╔═╡ Cell order:
@@ -246,8 +240,7 @@ end
 # ╟─461353a2-02de-4201-8f05-4768c619678c
 # ╟─c8d4652e-df15-4c21-88af-14ddd78a9f88
 # ╟─5aaec46b-156e-4881-90cb-77e6f84c9e09
-# ╠═3d29cbd9-2d4f-45a4-918d-2302822fc593
-# ╠═6dfdaa6d-9f79-4247-9fde-0b410cf6eef2
+# ╟─3d29cbd9-2d4f-45a4-918d-2302822fc593
 # ╟─32f03626-aa06-491d-be0b-4d7ebd7466d0
 # ╟─87e9bdcc-23e5-4d62-93c2-56f94a803f74
-# ╠═1cda21d0-ecb2-4baa-b220-57d976a7f948
+# ╟─1cda21d0-ecb2-4baa-b220-57d976a7f948

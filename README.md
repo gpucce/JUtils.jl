@@ -5,7 +5,7 @@
 |                                   |                                        |
 |:-------------------------------------|:---------------------------------------|
 | ![](output/poisson_point_process.gif) | ![](output/4_poisson_point_process.gif) |
-| ![](output/boulean_point_process.gif) | ![](output/matern1_point_process.gif) |
+| ![](output/boolean_point_process.gif) | ![](output/matern1_point_process.gif) |
 
 
 
