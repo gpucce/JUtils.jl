@@ -27,6 +27,7 @@ let
 			end
 		end
 		map(points) do c
+			# randomcolor()
 			circle(Point(c), 1, :fill)
 		end
 	end width height
@@ -189,7 +190,7 @@ height = 300
 # Random.seed!(1234)
 	
 points = _draw_point_process(λ, width=width, height=height)	
-n_frames = 500
+n_frames = 100
 circles_video = Video(width, height)
 
 
@@ -240,7 +241,7 @@ end
 # ╟─461353a2-02de-4201-8f05-4768c619678c
 # ╟─c8d4652e-df15-4c21-88af-14ddd78a9f88
 # ╟─5aaec46b-156e-4881-90cb-77e6f84c9e09
-# ╟─3d29cbd9-2d4f-45a4-918d-2302822fc593
+# ╠═3d29cbd9-2d4f-45a4-918d-2302822fc593
 # ╟─32f03626-aa06-491d-be0b-4d7ebd7466d0
 # ╟─87e9bdcc-23e5-4d62-93c2-56f94a803f74
 # ╟─1cda21d0-ecb2-4baa-b220-57d976a7f948
