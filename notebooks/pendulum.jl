@@ -18,13 +18,16 @@ function ground(args...)
 	sethue("white")
 end
 
+# ╔═╡ 7ac8f5b3-fa39-4e15-841b-5093437afbce
+L"\huge{\theta(t) = \pi e^{-\frac{t}{\tau}} \cos(t\omega)}"
+
 # ╔═╡ 42d0c661-344f-4358-869d-cf5929056392
 begin
 
 ## Constants
 shift = Point(0, 0)
 basepoint = shift + O
-radius = 200
+radius = 300
 margin = 10
 k = 0.7 * π
 n_frames = 500
@@ -103,10 +106,10 @@ points = map(1:n_frames) do idx
 		Object(
 			idx:idx,
 			(args...) -> begin
-				# Tangent
+				# Tangent component
 				Luxor.arrow(endpoint, endpoint + 100 * cos(motion(t) - π/2) * Point(sin(motion(t) - π/2), cos(motion(t) - π/2)), linewidth=2)
 				
-				# Perpendicular
+				# Perpendicular component
 				Luxor.arrow(endpoint, endpoint + radius/3 * sin(motion(t) - π/2) * Point(-cos(motion(t) - π/2), sin(motion(t) - π/2)), linewidth=2)
 				
 				# Full force
@@ -119,7 +122,7 @@ points = map(1:n_frames) do idx
 		Object(
 			idx:n_frames, 
 			JCircle(Point(
-					- radius + margin + idx * ((2*radius - margin) / n_frames) , 
+					- radius + margin + idx * (2*radius - margin) / n_frames , 
 					- radius/2 - margin - radius * motion(t)/2k
 					), 2, action=:fill, color="red")
 		)
@@ -130,11 +133,8 @@ Object(1:n_frames, JCircle(basepoint, 10, action=:fill, color="blue"))
 v = render(pendulum_video, pathname="../output/pendulum.gif", framerate=30)
 end
 
-# ╔═╡ e4d49656-5ebb-4b51-b6cc-b2a5209a904b
-plot(0:0.01:2, motion.(0:0.01:2)./k)
-
 # ╔═╡ Cell order:
-# ╠═8ff88bf0-14cb-11ec-2f1c-8f7745e8a6b2
-# ╠═b3c04a1d-41d3-458f-8624-3cb6c114f210
-# ╠═e4d49656-5ebb-4b51-b6cc-b2a5209a904b
-# ╠═42d0c661-344f-4358-869d-cf5929056392
+# ╟─8ff88bf0-14cb-11ec-2f1c-8f7745e8a6b2
+# ╟─b3c04a1d-41d3-458f-8624-3cb6c114f210
+# ╠═7ac8f5b3-fa39-4e15-841b-5093437afbce
+# ╟─42d0c661-344f-4358-869d-cf5929056392
