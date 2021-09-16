@@ -26,5 +26,10 @@
 |---|---|
 |![](output/pendulum.gif)||
 
+## Calculus
+|||
+|---|---|
+|![](output/series_sum.gif)||
+
 ## Presentation
 ![](output/process_animation.gif)
