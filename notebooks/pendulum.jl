@@ -80,33 +80,41 @@ points = map(1:n_frames) do idx
 				line(endpoint, Point(0, endpoint.y), :stroke)
 			end
 		)
+		Object(idx:idx, JCircle(endpoint, 20,action=:fill, color="red"))
 		
 		# Labels
 		Object(idx:idx, (args...)-> begin
 				fontsize(25)
 				cos_x_val = midpoint(basepoint, endpoint).x
 				# label("Cos(θ)", :N, Point(cos_x_val, endpoint.y), offset=5)
-				Javis.latex(L"\cos(\theta)", Point(cos_x_val, endpoint.y) + (0, -10), :middle, :center)
+				Javis.latex(L"\sin(\theta)", Point(cos_x_val, endpoint.y) + (0, -10), :middle, :center)
 				sin_y_val = midpoint(basepoint, endpoint).y
 				# label("Sin(θ)", :W, Point(endpoint.x, sin_y_val), offset=5)
-				Javis.latex(L"\sin(\theta)", Point(endpoint.x, sin_y_val) + (-4, 0), :middle, :center)
+				Javis.latex(L"\cos(\theta)", Point(endpoint.x, sin_y_val) + (-4, 0), :middle, :center)
 			end
 		)
 		
 		# Arcs
 		Object(idx:idx,(args...) -> begin
-				newpath()
 				mypoint = Point(sin(motion(t)), cos(motion(t)))
-				move(40 * mypoint)
-				arc(basepoint, 40, π/2 - motion(t), π, :stroke)
-				strokepath()
+				if motion(t) < 0
+					move(Point(0, 40))
+					arc(basepoint, 40, π/2, π/2 - motion(t), :stroke)
+				else
+					move(40 * mypoint)
+					arc(basepoint, 40, π/2 - motion(t), π/2, :stroke)
+				end
 				fontsize(25)
 				# label("θ", :W, basepoint + (-margin, margin), offset=0)
-				Javis.latex(L"\theta", basepoint + (-2margin, 2margin), :middle, :center)
-				
+				Javis.latex(
+					L"\theta", 
+					basepoint + (-2margin, 2margin), 
+					:middle, 
+					:center
+				)				
 			end
 		)
-		Object(idx:idx, JCircle(endpoint, 20,action=:fill, color="red"))
+
 		
 		Object(
 			idx:idx,
