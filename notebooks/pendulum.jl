@@ -38,6 +38,7 @@ Background(1:n_frames, ground)
 	
 ## Constant shapes
 Object((args...)->arc(O, radius, 0, π, :stroke))
+Object((args...)->Javis.latex(L"\Huge{\theta(t) = \pi e^{-\frac{t}{\tau}} \cos(\omega t)}", Point(150, -300), :middle, :center))
 Object(JLine(basepoint - (radius, 0), basepoint + (radius, 0), color="white"))
 Object(JLine(basepoint, basepoint + (0, radius), color="white"))
 Object(
@@ -79,29 +80,41 @@ points = map(1:n_frames) do idx
 				line(endpoint, Point(0, endpoint.y), :stroke)
 			end
 		)
+		Object(idx:idx, JCircle(endpoint, 20,action=:fill, color="red"))
 		
 		# Labels
 		Object(idx:idx, (args...)-> begin
 				fontsize(25)
 				cos_x_val = midpoint(basepoint, endpoint).x
-				label("Cos(θ)", :N, Point(cos_x_val, endpoint.y), offset=5)
+				# label("Cos(θ)", :N, Point(cos_x_val, endpoint.y), offset=5)
+				Javis.latex(L"\sin(\theta)", Point(cos_x_val, endpoint.y) + (0, -10), :middle, :center)
 				sin_y_val = midpoint(basepoint, endpoint).y
-				label("Sin(θ)", :W, Point(endpoint.x, sin_y_val), offset=5)
+				# label("Sin(θ)", :W, Point(endpoint.x, sin_y_val), offset=5)
+				Javis.latex(L"\cos(\theta)", Point(endpoint.x, sin_y_val) + (-4, 0), :middle, :center)
 			end
 		)
 		
 		# Arcs
 		Object(idx:idx,(args...) -> begin
-				newpath()
 				mypoint = Point(sin(motion(t)), cos(motion(t)))
-				move(40 * mypoint)
-				arc(basepoint, 40, π/2 - motion(t), π, :stroke)
-				strokepath()
+				if motion(t) < 0
+					move(Point(0, 40))
+					arc(basepoint, 40, π/2, π/2 - motion(t), :stroke)
+				else
+					move(40 * mypoint)
+					arc(basepoint, 40, π/2 - motion(t), π/2, :stroke)
+				end
 				fontsize(25)
-				label("θ", :W, basepoint + (-margin, margin), offset=0)
+				# label("θ", :W, basepoint + (-margin, margin), offset=0)
+				Javis.latex(
+					L"\theta", 
+					basepoint + (-2margin, 2margin), 
+					:middle, 
+					:center
+				)				
 			end
 		)
-		Object(idx:idx, JCircle(endpoint, 20,action=:fill, color="red"))
+
 		
 		Object(
 			idx:idx,
@@ -127,14 +140,15 @@ points = map(1:n_frames) do idx
 					), 2, action=:fill, color="red")
 		)
 	end
+	
 
-
-Object(1:n_frames, JCircle(basepoint, 10, action=:fill, color="blue"))
-v = render(pendulum_video, pathname="../output/pendulum.gif", framerate=30)
+	Object((args...) -> Javis.latex(L"\frac{2}{3}"))
+	Object(1:n_frames, JCircle(basepoint, 10, action=:fill, color="blue"))
+	v = render(pendulum_video, pathname="../output/pendulum.gif", framerate=30)
 end
 
 # ╔═╡ Cell order:
-# ╟─8ff88bf0-14cb-11ec-2f1c-8f7745e8a6b2
+# ╠═8ff88bf0-14cb-11ec-2f1c-8f7745e8a6b2
 # ╟─b3c04a1d-41d3-458f-8624-3cb6c114f210
 # ╠═7ac8f5b3-fa39-4e15-841b-5093437afbce
-# ╟─42d0c661-344f-4358-869d-cf5929056392
+# ╠═42d0c661-344f-4358-869d-cf5929056392
