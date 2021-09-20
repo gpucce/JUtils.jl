@@ -29,7 +29,7 @@
 ## Calculus
 |||
 |---|---|
-|![](output/series_sum.gif)||
+|![](output/series_sum.gif)|![](output/mandelbrot.gif)|
 
 ## Presentation
 ![](output/process_animation.gif)
