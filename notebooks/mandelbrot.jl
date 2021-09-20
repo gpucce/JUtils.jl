@@ -98,7 +98,7 @@ end
 let
 	height, width = 500, 500
 	n_frames = 500
-	n_points = 100
+	n_points = 200
 	mandelvideo = Video(width, height)
 	Background(1:n_frames, ground)
 	make_mandelbrot(width, height, n_frames, n_points, shape_lasting=100)
