@@ -10,7 +10,6 @@ DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
 GLM = "38e38edf-8417-5370-95a0-9cbb8c7f171a"
->>>>>>> edfc17718bd204cca99df04d313878e3950da409
 Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
 Javis = "78b212ba-a7f9-42d4-b726-60726080707e"
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
