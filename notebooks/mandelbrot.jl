@@ -66,7 +66,7 @@ function make_mandelbrot(width, height, n_frames, n_points; shape_lasting=100)
 	points = [
 		Complex(i,j) 
 		for i in range(-2, 1/2, length=n_points), 
-			j in range(-1.5, 1.5, length=n_points)
+			j in range(-1.3, 1.3, length=n_points)
 		]
 	positions = [
 		(i,j) 
@@ -83,12 +83,12 @@ function make_mandelbrot(width, height, n_frames, n_points; shape_lasting=100)
 		Object(
 			floor(
 				Int,
-				rescale(idx, 1, length(positions), 1, final_appearing_frame)
+				rescale(idx, 2, length(positions), 1, final_appearing_frame)
 			):n_frames,
 			@JShape begin
 				origin(O)
 				sethue("orange")
-				circle(Point(position...), 1, :fill)
+				circle(Point(position...), 2, :fill)
 			end
 		)
 	end
@@ -98,10 +98,10 @@ end
 let
 	height, width = 500, 500
 	n_frames = 500
-	n_points = 300
+	n_points = 100
 	mandelvideo = Video(width, height)
 	Background(1:n_frames, ground)
-	make_mandelbrot(width, height, n_frames, n_points, shape_lasting=300)
+	make_mandelbrot(width, height, n_frames, n_points, shape_lasting=100)
 	render(
 		mandelvideo,
 		pathname="../output/mandelbrot.gif"
