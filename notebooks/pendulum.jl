@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.16.0
+# v0.16.1
 
 using Markdown
 using InteractiveUtils
@@ -8,7 +8,7 @@ using InteractiveUtils
 begin
 using Pkg
 Pkg.activate("..")
-using Javis, JUtils, Animations, PlutoUI, Plots, LaTeXStrings
+using Javis, Animations, PlutoUI, Plots, LaTeXStrings
 import Luxor
 end
 
@@ -140,7 +140,6 @@ points = map(1:n_frames) do idx
 					), 2, action=:fill, color="red")
 		)
 	end
-	
 
 	Object((args...) -> Javis.latex(L"\frac{2}{3}"))
 	Object(1:n_frames, JCircle(basepoint, 10, action=:fill, color="blue"))
