@@ -8,8 +8,9 @@ using FileIO
 using StatsBase
 using Distributions
 using ROCAnalysis
+using LaTeXStrings
 
-import Luxor
+# import Luxor
 
 const φ = Base.MathConstants.φ
 
