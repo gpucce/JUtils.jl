@@ -141,9 +141,9 @@ end
 
 # ╔═╡ f429a061-3ed7-41df-b39d-0989bf477da9
 begin
-	n_frames = 200
-	width = 700
-	height = 500
+	n_frames = 2000
+	width = 1600
+	height = 900
 	margin = 50
 	time_steps = floor.(Int, range(1, n_frames, length = 12))
 	
@@ -182,7 +182,7 @@ begin
 		]
 	)
 	
-	wlstartpoints = [Point(i + width÷3, 0) for i in [-60, -40, -20, 40, 80, 100]] 
+	wlstartpoints = [Point(i + width÷3, 0) for i in [-150, -90, -30, 30, 90, 150]] 
 	wlendpoints = [Point(i, -height÷3) for i in [-180, -105, -35, 35, 105, 180]]
 	wlstrings = [
 		L"\Large{w_1}", 
@@ -206,7 +206,8 @@ begin
 					)
 				end
 			)
-			act!(texvec, Action(time_steps[2]:time_steps[3], anim_scale(1.5)))
+			act!(texvec, Action(1:1, anim_scale(2.0)))
+			act!(texvec, Action(time_steps[2]:time_steps[3], anim_scale(2.5)))
 		end for (wlstartpoint, wlstring) in zip(wlstartpoints, wlstrings)]
 	
 	vecendpoint = Point(0, -height÷3)
@@ -254,12 +255,12 @@ begin
 	
 	barpoints = [Point(i, height÷3) for i in [-180, -105, -35, 35, 105, 180]]
 	lstrings = [
-		L"$\alpha_{1}$", 
-		L"$\alpha_{2}$",
-		L"$\alpha_{150}$",
-		L"$\alpha_{308}$",
-		L"$\alpha_{590}$",
-		L"$\alpha_{n}$"
+		L"$\Large{\alpha_{1}}$", 
+		L"$\Large{\alpha_{2}}$",
+		L"$\Large{\alpha_{i}}$",
+		L"$\Large{\alpha_{308}}$",
+		L"$\Large{\alpha_{j}}$",
+		L"$\Large{\alpha_{n}}$"
 	]
 	texparams = [@JLayer time_steps[6]:time_steps[end] 300 300 p begin
 		ob = Object(
@@ -301,4 +302,4 @@ end
 # ╠═67328dd2-4a0b-428c-a4ff-687d76498b69
 # ╠═c12aff7b-e936-4e8e-98e4-7f8acde3cf35
 # ╠═60b49d2c-e5cd-44d0-a1f4-a842236ff189
-# ╠═f429a061-3ed7-41df-b39d-0989bf477da9
+# ╟─f429a061-3ed7-41df-b39d-0989bf477da9
