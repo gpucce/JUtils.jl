@@ -9,58 +9,55 @@ using Javis, Colors
 
 # ╔═╡ 5f34a9e3-4970-4871-beb2-9554d00bd43c
 begin
-	
-n_frames = 1000
-n_poly = 50
-radius = 150
-	
-function ground(args...)
-	background("white")
-	sethue("black")
-end
 
-function circoradius(r,n)
-	halfl = r / tan( π*((n-2)/2n) )
-	newr = sqrt(r^2 + halfl^2)
-end
-	
-my_video = Video(450, 450)
-step_size = n_frames ÷ n_poly
-colors = range(colorant"red", colorant"blue", length=n_poly-1)
-Background(1:n_frames, ground)
-	
-for i in 1:n_poly-1
-	Object(
-		(i-1)*step_size : i * step_size,
-		@JShape begin
-			setline(2)	
-			sethue(colors[i])
-			ngon(O, circoradius(radius,i), i, 0, :stroke)
-			ngon(O, radius, i, 0, :stroke)
-		end
-		)
-	Object(
-	(i-1)*step_size : i * step_size,
-	@JShape begin
-		fontsize(30)
-		label("N. Sides", :N, offset=20)
-		fontsize(40)
-		sethue(colors[i])
-		text(string(i), valign=:top, halign=:center)
-	end
-	)
-end
+    n_frames = 1000
+    n_poly = 50
+    radius = 150
 
-Object(
-		1:n_frames,
-		@JShape begin
-			sethue(colors[end])
-			setline(2)
-			circle(O, radius,:stroke)
-		end
-		)
-	
-render(my_video, pathname="../output/circle_area.gif")
+    function ground(args...)
+        background("white")
+        sethue("black")
+    end
+
+    function circoradius(r, n)
+        halfl = r / tan(π * ((n - 2) / 2n))
+        newr = sqrt(r^2 + halfl^2)
+    end
+
+    my_video = Video(450, 450)
+    step_size = n_frames ÷ n_poly
+    colors = range(colorant"red", colorant"blue", length = n_poly - 1)
+    Background(1:n_frames, ground)
+
+    for i in 1:(n_poly - 1)
+        Object(
+            ((i - 1) * step_size):(i * step_size),
+            @JShape begin
+                setline(2)
+                sethue(colors[i])
+                ngon(O, circoradius(radius, i), i, 0, :stroke)
+                ngon(O, radius, i, 0, :stroke)
+            end
+        )
+        Object(
+            ((i - 1) * step_size):(i * step_size),
+            @JShape begin
+                fontsize(30)
+                label("N. Sides", :N, offset = 20)
+                fontsize(40)
+                sethue(colors[i])
+                text(string(i), valign = :top, halign = :center)
+            end
+        )
+    end
+
+    Object(1:n_frames, @JShape begin
+        sethue(colors[end])
+        setline(2)
+        circle(O, radius, :stroke)
+    end)
+
+    render(my_video, pathname = "../output/circle_area.gif")
 end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001

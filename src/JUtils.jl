@@ -31,4 +31,11 @@ export CLT
 
 include("Util.jl")
 export sensitivity, specificity
+
+include("NER.jl")
+export make_ner
+
+include("prelearn.jl")
+export make_prelearn
+
 end

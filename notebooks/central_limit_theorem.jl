@@ -15,20 +15,15 @@ end
 
 # ╔═╡ 5b918be6-0003-11ec-1e1f-534faed7dfe5
 begin
-using Pkg
-Pkg.activate("..")
-using Revise, Javis, Distributions, StatsBase, JUtils, Random, Colors, FileIO, PlutoUI, Plots
-import Luxor
+    using Pkg
+    Pkg.activate("..")
+    using Revise,
+        Javis, Distributions, StatsBase, JUtils, Random, Colors, FileIO, PlutoUI, Plots
+    import Luxor
 end
 
 # ╔═╡ 46fd9cf5-eae0-4dec-91df-ebd892cbf4d6
-converter = Dict(
-	[
-		"bernoulli" => Bernoulli,
-		"pareto" => Pareto,
-		
-	]
-);
+converter = Dict(["bernoulli" => Bernoulli, "pareto" => Pareto]);
 
 # ╔═╡ b6e3b06f-a521-40fb-9d5a-9268302cd17b
 md"""
@@ -50,11 +45,11 @@ param_dist = converter[dist](param)
 
 # ╔═╡ 47bcc4fe-a44f-4715-8ed3-bbe00c02f30f
 begin
-start && JUtils.CLT(
-		param_dist, 
-		boundingbox = BoundingBox(O+(-250, -300), O+(250,200)),
-		pathname="../output/central_limit_theorem.gif"
-	)
+    start && JUtils.CLT(
+        param_dist,
+        boundingbox = BoundingBox(O + (-250, -300), O + (250, 200)),
+        pathname = "../output/central_limit_theorem.gif",
+    )
 end
 
 # ╔═╡ Cell order:
