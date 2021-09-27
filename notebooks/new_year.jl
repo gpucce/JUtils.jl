@@ -139,22 +139,13 @@ function logistic(x)
 	ℯ^x/(1 + ℯ^x)
 end
 
-# ╔═╡ dd26ba35-d524-4828-bf1c-0c667ecac1c1
-
-
-# ╔═╡ fd9c83c7-a45e-415f-9a3f-28dfb8b0d57d
-@draw begin
-	points = [Point(i/10, -100 * logistic(i/150)) for i in range(-1000, 1000, length=300)]
-	circle.(points, 3, :fill)
-end 300 300
-
 # ╔═╡ f429a061-3ed7-41df-b39d-0989bf477da9
 begin
-	n_frames = 1000
+	n_frames = 200
 	width = 700
 	height = 500
 	margin = 50
-	time_steps = floor.(Int, range(1, n_frames, length = 11))
+	time_steps = floor.(Int, range(1, n_frames, length = 12))
 	
 	nn_video = Video(width, height)
 	Background(
@@ -191,56 +182,75 @@ begin
 		]
 	)
 	
-	latexvec = @JLayer time_steps[4]:time_steps[7] 500 500 Point(width÷3, 0) begin
+	wlstartpoints = [Point(i + width÷3, 0) for i in [-60, -40, -20, 40, 80, 100]] 
+	wlendpoints = [Point(i, -height÷3) for i in [-180, -105, -35, 35, 105, 180]]
+	wlstrings = [
+		L"\Large{w_1}", 
+		L"\Large{w_2}", 
+		L"\Large{w_i}", 
+		L"\Large{w_{308}}", 
+		L"\Large{w_j}", 
+		L"\Large{w_n}"
+		]
+	
+	latexvecs = [@JLayer time_steps[4]:time_steps[end] 500 500 wlstartpoint begin
 		texvec = Object(
 			1:n_frames,
 			@JShape begin
 				Javis.latex(
-					L"\Large{[w_1, w_2, \dots, w_{308}, \dots, w_n]}",
-					O,
-					:stroke,
-					valign=:middle, 
-					halign=:center
-				)
-			end
-		)
-		# act!(texvec, Action(1:1, anim_scale(1.5)))
-		act!(texvec, Action(time_steps[2]:time_steps[3], anim_scale(1.5)))
-	end
+						wlstring,
+						O,
+						:stroke,
+						valign=:middle, 
+						halign=:center
+					)
+				end
+			)
+			act!(texvec, Action(time_steps[2]:time_steps[3], anim_scale(1.5)))
+		end for (wlstartpoint, wlstring) in zip(wlstartpoints, wlstrings)]
 	
 	vecendpoint = Point(0, -height÷3)
-	act!(
-		latexvec, 
-		Action(time_steps[2]:time_steps[3], anim_translate(Point(width÷3, 0), vecendpoint))
-	)
+	for (idx, latexvec) in enumerate(latexvecs)
+		act!(
+			latexvec, 
+			Action(time_steps[2]:time_steps[3], anim_translate(wlstartpoints[idx], wlendpoints[idx] ))
+		)
+	end
 	plots_points = [Point.(
 		[rand(-height÷4:height÷4) for i in 1:30], 
 		[rand(-height÷8:height÷8) for i in 1:30]
 	) for i in 1:5]
-	linear_regressions = [
-			Object( 
-			time_steps[6]:time_steps[8],
-			(args...) -> begin
-				box(O, height÷2, height÷2, :stroke)
-				rotate(-θ)			
-				points = Point.(
-					range(-height÷6, height÷6, length=300), 
-					-100 .* logistic.(range(-1000, 1000, length=300)./ 150) .+ 50 
-				)
-				circle.(points, 2, :fill)
-				strokepath()
-				for p in plot_points
-					circle(p, 3, :fill)
-				end
-			end
-			)
+	linear_regressions = @JLayer time_steps[6]:time_steps[end] begin
 		for (θ, plot_points) in zip(rand(range(0, π/4, length=5), 5), plots_points)
-		]
-	Object(time_steps[6]:time_steps[8], 
+			Object( 
+				1:n_frames,
+				(args...) -> begin
+					box(O, height÷2, height÷2, :stroke)
+					rotate(-θ)			
+					sethue("red")
+					points = Point.(
+						range(-height÷6, height÷6, length=300), 
+						-100 .* logistic.(range(-1000, 1000, length=300)./ 150) .+ 50 
+					)
+					circle.(points, 2, :fill)
+					sethue("black")
+					for p in plot_points
+						circle(p, 3, :fill)
+					end
+				end
+			)
+		end
+	end
+	
+	act!(linear_regressions, Action(time_steps[2]:time_steps[3], anim_scale(0.5)))
+	act!(linear_regressions, Action(time_steps[2]:time_steps[3], anim_translate(Point(width÷3, 0))))
+	
+	central_arr = Object(time_steps[7]:time_steps[9], 
 		@JShape begin
-			arrow(vecendpoint + (-width÷4, 0), Point(-width÷4, height÷3 - 20))
+			arrow(vecendpoint + (0, 20), Point(0, height÷3 - 20))
 		end
 	)
+	act!(central_arr, Action(1:time_steps[2], appear(:fade)))
 	
 	barpoints = [Point(i, height÷3) for i in [-180, -105, -35, 35, 105, 180]]
 	lstrings = [
@@ -251,7 +261,7 @@ begin
 		L"$\alpha_{590}$",
 		L"$\alpha_{n}$"
 	]
-	texparams = [@JLayer time_steps[6]:time_steps[11] 300 300 p begin
+	texparams = [@JLayer time_steps[6]:time_steps[end] 300 300 p begin
 		ob = Object(
 		1:n_frames,
 		@JShape begin
@@ -271,13 +281,13 @@ begin
 			]
 	
 	[Object(
-		time_steps[8]:time_steps[11], 
-		JLine(x - (0, 10), x - (0, y), linewidth=5)
+		time_steps[9]:time_steps[12], 
+		JLine(x - (0, 10), x - (0, y), linewidth=5, color="red")
 	) for (x, y) in zip(barpoints, [80, 40, 12, 200, 60, 20])]
 	
 	
 	render(nn_video, pathname="../output/bert_lasso.gif",
-		postprocess_frame=postprocess_frame
+		# postprocess_frame=postprocess_frame
 	)
 end
 
@@ -291,6 +301,4 @@ end
 # ╠═67328dd2-4a0b-428c-a4ff-687d76498b69
 # ╠═c12aff7b-e936-4e8e-98e4-7f8acde3cf35
 # ╠═60b49d2c-e5cd-44d0-a1f4-a842236ff189
-# ╠═dd26ba35-d524-4828-bf1c-0c667ecac1c1
-# ╠═fd9c83c7-a45e-415f-9a3f-28dfb8b0d57d
 # ╠═f429a061-3ed7-41df-b39d-0989bf477da9
