@@ -4,30 +4,21 @@
 using Markdown
 using InteractiveUtils
 
-# This Pluto notebook uses @bind for interactivity. When running this notebook outside of Pluto, the following 'mock version' of @bind gives bound variables a default value (instead of an error).
-macro bind(def, element)
-    quote
-        local el = $(esc(element))
-        global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : missing
-        el
-    end
-end
-
 # ╔═╡ de66ce40-1945-11ec-19bd-53bbe9ed64c0
 begin
     using Pkg
     Pkg.activate(".")
-    Pkg.add("Rotations")
-    using Revise,
-        Javis,
-        Colors,
-        Images,
-        PlutoUI,
-        LaTeXStrings,
-        LightXML,
-        VideoIO,
-        CoordinateTransformations,
-        Rotations
+    using Revise
+    using Javis
+    using Colors
+    using Images
+    using PlutoUI
+    using LaTeXStrings
+    using LightXML
+    using VideoIO
+    using CoordinateTransformations
+    using Rotations
+	using BenchmarkTools
     import Luxor
 end
 
@@ -54,7 +45,7 @@ Javis.crop(im2, 59, 59) == im
 # ╔═╡ a2878ded-81f8-4e7d-91da-b73ace797dda
 function ground(color)
     (args...) -> begin
-        background(color)
+        Luxor.background(color)
         sethue("white")
     end
 end
@@ -106,39 +97,17 @@ begin
 end
 
 # ╔═╡ 48f6d415-6721-49bf-9390-fbae186f1c84
-v2 = let
+@btime let
     myvideo = Video(200, 200)
     Background(1:100, ground("black"))
     circ = Object(JCircle(Point(0, 20), 20, action = :fill, color = "white"))
     act!(circ, Action(anim_rotate(2π)))
     # tempdir = "temp3$(join(rand('a':'z', 10)))"
 
-    v2 = render(
+    render(
         myvideo,
         pathname = "output.gif",
-        # tempdirectory="temp2",
-        # postprocess_frame = postprocess_frame,
-        # postprocess_frames_flow = postprocess_frames_flow,
-        # liveview=true
     )
-end
-
-# ╔═╡ d4c10d28-b3df-4746-b2e6-22ffd12ec6bf
-@bind follow_slide Slider(1:length(postprocess_frames_flow(1:50)))
-
-# ╔═╡ 7d35d8fe-c241-4883-a2fb-7a971df76456
-vec1 = load.(filter(!contains("palette"), readdir("temp", join = true)))
-
-# ╔═╡ be1d8e1b-ed5c-4be5-a79a-85895083d6f7
-vec2 = load.(filter(!contains("palette"), readdir("temp2", join = true)))
-
-# ╔═╡ 3d2fdf5f-9c36-4000-9ae4-e765e7b6bd1f
-vec1 .== vec2
-
-# ╔═╡ ba64069c-1995-4645-a30f-8fb2361117fe
-begin
-    # sum(vec1[1] .!= vec2[1])
-    sum(vec1[2] .!= colorant"black"), sum(vec2[2] .!= colorant"black")
 end
 
 # ╔═╡ Cell order:
@@ -149,8 +118,3 @@ end
 # ╠═a2878ded-81f8-4e7d-91da-b73ace797dda
 # ╠═38286288-86ff-4cee-9c58-296d0ed3c120
 # ╠═48f6d415-6721-49bf-9390-fbae186f1c84
-# ╟─d4c10d28-b3df-4746-b2e6-22ffd12ec6bf
-# ╠═7d35d8fe-c241-4883-a2fb-7a971df76456
-# ╠═be1d8e1b-ed5c-4be5-a79a-85895083d6f7
-# ╠═3d2fdf5f-9c36-4000-9ae4-e765e7b6bd1f
-# ╠═ba64069c-1995-4645-a30f-8fb2361117fe

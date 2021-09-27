@@ -218,25 +218,34 @@ begin
 		)
 	end
 	plots_points = [Point.(
-		[rand(-height÷4:height÷4) for i in 1:30], 
-		[rand(-height÷8:height÷8) for i in 1:30]
+		[rand(-width÷4:width÷4) for i in 1:30], 
+		[rand(-height÷4:height÷4) for i in 1:30]
 	) for i in 1:5]
+	plots_rotations = rand(range(0, π/4, length=20), 5)
+	plots_colors = [randomhue() for _ in 1:5]
 	linear_regressions = @JLayer time_steps[6]:time_steps[end] begin
-		for (θ, plot_points) in zip(rand(range(0, π/4, length=5), 5), plots_points)
+		for (θ, plot_points, color) in zip(plots_rotations, plots_points, plots_colors)
 			Object( 
 				1:n_frames,
 				(args...) -> begin
-					box(O, height÷2, height÷2, :stroke)
-					rotate(-θ)			
-					sethue("red")
-					points = Point.(
-						range(-height÷6, height÷6, length=300), 
-						-100 .* logistic.(range(-1000, 1000, length=300)./ 150) .+ 50 
+					bb = box(O, width÷2, height÷2, :stroke)
+					rotate(-θ)
+					sethue(color)
+					# sethue("red")
+					line(
+						Point(-width÷5, -height÷5), 
+						Point(width÷5, height÷5),
+						:stroke
 					)
-					circle.(points, 2, :fill)
-					sethue("black")
+					# sethue("black")
 					for p in plot_points
-						circle(p, 3, :fill)
+						rotate(θ)
+						if (abs(p.x) > width÷4) || (abs(p.y) > height÷4)
+							continue
+						else
+							circle(p, 3, :fill)
+						end
+						rotate(-θ)
 					end
 				end
 			)
@@ -287,9 +296,7 @@ begin
 	) for (x, y) in zip(barpoints, [80, 40, 12, 200, 60, 20])]
 	
 	
-	render(nn_video, pathname="../output/bert_lasso.gif",
-		# postprocess_frame=postprocess_frame
-	)
+	render(nn_video, pathname="../output/bert_lasso.gif")
 end
 
 # ╔═╡ Cell order:
@@ -302,4 +309,4 @@ end
 # ╠═67328dd2-4a0b-428c-a4ff-687d76498b69
 # ╠═c12aff7b-e936-4e8e-98e4-7f8acde3cf35
 # ╠═60b49d2c-e5cd-44d0-a1f4-a842236ff189
-# ╟─f429a061-3ed7-41df-b39d-0989bf477da9
+# ╠═f429a061-3ed7-41df-b39d-0989bf477da9
