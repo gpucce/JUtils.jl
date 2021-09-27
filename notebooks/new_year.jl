@@ -24,7 +24,7 @@ function ground(color)
 end
 
 # ╔═╡ 4bfea714-7fdd-47cf-8e54-bb30bc2a625c
-begin
+let
 	height = 250
 	width = 700
 	margin = 50
@@ -78,6 +78,12 @@ let
 	render(v, pathname="../output/TechNER.gif")
 end
 
+# ╔═╡ 67328dd2-4a0b-428c-a4ff-687d76498b69
+function postprocess_frame(frame_image, frame, frames)
+	g(x) = RGB(1 - x.r, 1 - x.g, 1 - x.b)
+	g.(frame_image)
+end
+
 # ╔═╡ c12aff7b-e936-4e8e-98e4-7f8acde3cf35
 function make_neural_net(; n_frames, width, height, margin, n_layers, maxneurons)
 	
@@ -99,13 +105,13 @@ function make_neural_net(; n_frames, width, height, margin, n_layers, maxneurons
 		for (n_neurons, x) in zip(neurons_per_layers, xpos)
 	]
 	
-	nn = Object(@JShape begin
+	Object(@JShape begin
 			for layer in layers
 				for neuron in layer
 					setcolor(sethue("blue")..., 0.3)
 					circle(neuron, 15, :fill)
-					sethue("black")
-					setline(2)
+					setcolor("black")
+					setline(1)
 					circle(neuron, 15, :stroke)
 				end
 			end
@@ -129,12 +135,12 @@ function make_neural_net(; n_frames, width, height, margin, n_layers, maxneurons
 end
 
 # ╔═╡ f429a061-3ed7-41df-b39d-0989bf477da9
-let
-	n_frames = 200
+begin
+	n_frames = 2000
 	width = 700
-	height = 300
+	height = 500
 	margin = 50
-	time_steps = floor.(Int, range(1, n_frames, length = 10))
+	time_steps = floor.(Int, range(1, n_frames, length = 11))
 	
 	nn_video = Video(width, height)
 	Background(
@@ -159,7 +165,7 @@ let
 	myarrow = Object(
 		time_steps[3]:time_steps[5], 
 		@JShape begin
-			arrow(Point(-width÷4, 0), Point(width÷5, 0))	
+			arrow(Point(-width ÷ 6, 0), Point(width ÷ 6, 0))	
 		end
 	)
 	
@@ -171,7 +177,7 @@ let
 		]
 	)
 	
-	latexvec = @JLayer time_steps[4]:n_frames 300 300 Point(width÷3, 0) begin
+	latexvec = @JLayer time_steps[4]:time_steps[7] 500 500 Point(width÷3, 0) begin
 		texvec = Object(
 			1:n_frames,
 			@JShape begin
@@ -192,34 +198,48 @@ let
 		latexvec, 
 		Action(time_steps[2]:time_steps[3], anim_translate(Point(width÷3, 0), vecendpoint))
 	)
-	plot_points = Point.(
+	plots_points = [Point.(
 		[rand(-height÷4:height÷4) for i in 1:30], 
 		[rand(-height÷8:height÷8) for i in 1:30]
-	)
-	linear_regression = @JLayer time_steps[6]:time_steps[7] begin
-		Object(
-			1:n_frames,
-			@JShape begin
+	) for i in 1:5]
+	linear_regressions = [
+			Object( 
+			time_steps[6]:time_steps[8],
+			(args...) -> begin
 				box(O, height÷2, height÷2, :stoke)
-				rotate(π/4)
-				line(Point(-height÷4, 0), Point(height÷4, 0), :stroke)
+				rotate(-θ)
+				# line(Point(-height÷4, 0), Point(height÷4, 0), :stroke)
+				move(Point(-height÷4, 0))
+				curve(Point(-height÷6, 50), Point(+height÷6, -50), Point(height÷4, 0))
+				strokepath()
 				for p in plot_points
 					circle(p, 3, :fill)
 				end
 			end
-		)
-	end
-	Object(time_steps[6]:time_steps[7], 
+			)
+		for (θ, plot_points) in zip(rand(range(0, π/4, length=5), 5), plots_points)
+		]
+	Object(time_steps[6]:time_steps[8], 
 		@JShape begin
-			arrow(vecendpoint + (-width÷4, 0), Point(-width÷4, height÷3))
+			arrow(vecendpoint + (-width÷4, 0), Point(-width÷4, height÷3 - 20))
 		end
 	)
-	texparam = @JLayer time_steps[6]:time_steps[9] 300 300 Point(0, height÷3) begin
+	
+	barpoints = [Point(i, height÷3) for i in [-180, -105, -35, 35, 105, 180]]
+	lstrings = [
+		L"\alpha^{j}_1", 
+		L"\alpha^{j}_2",
+		L"\alpha^{j}_{150}",
+		L"\alpha^{j}_{308}",
+		L"\alpha^{j}_{590}",
+		L"\alpha^{j}_n"
+	]
+	texparams = [@JLayer time_steps[6]:time_steps[11] 300 300 p begin
 		ob = Object(
 		1:n_frames,
 		@JShape begin
 			Javis.latex(
-				L"\alpha_1, \alpha_2, \dots, \alpha_{308}, \dots, \alpha_n",
+				Lstr,
 				O,
 				:stroke,
 				valign=:middle,
@@ -229,14 +249,20 @@ let
 	)
 		act!(ob, Action(1:1, anim_scale(2.5), keep=true))
 		act!(ob, Action(1:time_steps[2], appear(:fade)))
-	end
+		end 
+			for (Lstr, p) in zip(lstrings, barpoints)
+			]
+	
+	[Object(
+		time_steps[8]:time_steps[11], 
+		JLine(x - (0, 10), x - (0, y), linewidth=5)
+	) for (x, y) in zip(barpoints, [80, 40, 12, 200, 60, 20])]
 	
 	
-	render(nn_video, pathname="../output/bert_lasso.gif")
+	render(nn_video, pathname="../output/bert_lasso.gif",
+		postprocess_frame=postprocess_frame
+	)
 end
-
-# ╔═╡ f749716a-0aaa-4498-b88e-471c25eb5cb3
-
 
 # ╔═╡ Cell order:
 # ╠═1d4d4c0e-1f81-11ec-1e2a-d9eb1f505571
@@ -245,6 +271,6 @@ end
 # ╟─4bfea714-7fdd-47cf-8e54-bb30bc2a625c
 # ╟─21e78860-f28b-4475-b38f-01e4ee7d802e
 # ╟─553312d1-74ef-4edc-b293-caf06a65b71b
+# ╠═67328dd2-4a0b-428c-a4ff-687d76498b69
 # ╠═c12aff7b-e936-4e8e-98e4-7f8acde3cf35
 # ╠═f429a061-3ed7-41df-b39d-0989bf477da9
-# ╠═f749716a-0aaa-4498-b88e-471c25eb5cb3
