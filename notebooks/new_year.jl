@@ -108,7 +108,7 @@ function make_neural_net(; n_frames, width, height, margin, n_layers, maxneurons
 	Object(@JShape begin
 			for layer in layers
 				for neuron in layer
-					setcolor(sethue("blue")..., 0.3)
+					sethue("red")
 					circle(neuron, 15, :fill)
 					setcolor("black")
 					setline(1)
@@ -134,9 +134,23 @@ function make_neural_net(; n_frames, width, height, margin, n_layers, maxneurons
 	)
 end
 
+# ╔═╡ 60b49d2c-e5cd-44d0-a1f4-a842236ff189
+function logistic(x)
+	ℯ^x/(1 + ℯ^x)
+end
+
+# ╔═╡ dd26ba35-d524-4828-bf1c-0c667ecac1c1
+
+
+# ╔═╡ fd9c83c7-a45e-415f-9a3f-28dfb8b0d57d
+@draw begin
+	points = [Point(i/10, -100 * logistic(i/150)) for i in range(-1000, 1000, length=300)]
+	circle.(points, 3, :fill)
+end 300 300
+
 # ╔═╡ f429a061-3ed7-41df-b39d-0989bf477da9
 begin
-	n_frames = 2000
+	n_frames = 1000
 	width = 700
 	height = 500
 	margin = 50
@@ -182,7 +196,7 @@ begin
 			1:n_frames,
 			@JShape begin
 				Javis.latex(
-					L"[w_1, w_2, \dots, w_{308}, \dots, w_n]",
+					L"\Large{[w_1, w_2, \dots, w_{308}, \dots, w_n]}",
 					O,
 					:stroke,
 					valign=:middle, 
@@ -190,7 +204,8 @@ begin
 				)
 			end
 		)
-		act!(texvec, Action(time_steps[2]:time_steps[3], anim_scale(2.5)))
+		# act!(texvec, Action(1:1, anim_scale(1.5)))
+		act!(texvec, Action(time_steps[2]:time_steps[3], anim_scale(1.5)))
 	end
 	
 	vecendpoint = Point(0, -height÷3)
@@ -206,11 +221,13 @@ begin
 			Object( 
 			time_steps[6]:time_steps[8],
 			(args...) -> begin
-				box(O, height÷2, height÷2, :stoke)
-				rotate(-θ)
-				# line(Point(-height÷4, 0), Point(height÷4, 0), :stroke)
-				move(Point(-height÷4, 0))
-				curve(Point(-height÷6, 50), Point(+height÷6, -50), Point(height÷4, 0))
+				box(O, height÷2, height÷2, :stroke)
+				rotate(-θ)			
+				points = Point.(
+					range(-height÷6, height÷6, length=300), 
+					-100 .* logistic.(range(-1000, 1000, length=300)./ 150) .+ 50 
+				)
+				circle.(points, 2, :fill)
 				strokepath()
 				for p in plot_points
 					circle(p, 3, :fill)
@@ -227,12 +244,12 @@ begin
 	
 	barpoints = [Point(i, height÷3) for i in [-180, -105, -35, 35, 105, 180]]
 	lstrings = [
-		L"\alpha^{j}_1", 
-		L"\alpha^{j}_2",
-		L"\alpha^{j}_{150}",
-		L"\alpha^{j}_{308}",
-		L"\alpha^{j}_{590}",
-		L"\alpha^{j}_n"
+		L"$\alpha_{1}$", 
+		L"$\alpha_{2}$",
+		L"$\alpha_{150}$",
+		L"$\alpha_{308}$",
+		L"$\alpha_{590}$",
+		L"$\alpha_{n}$"
 	]
 	texparams = [@JLayer time_steps[6]:time_steps[11] 300 300 p begin
 		ob = Object(
@@ -273,4 +290,7 @@ end
 # ╟─553312d1-74ef-4edc-b293-caf06a65b71b
 # ╠═67328dd2-4a0b-428c-a4ff-687d76498b69
 # ╠═c12aff7b-e936-4e8e-98e4-7f8acde3cf35
+# ╠═60b49d2c-e5cd-44d0-a1f4-a842236ff189
+# ╠═dd26ba35-d524-4828-bf1c-0c667ecac1c1
+# ╠═fd9c83c7-a45e-415f-9a3f-28dfb8b0d57d
 # ╠═f429a061-3ed7-41df-b39d-0989bf477da9
