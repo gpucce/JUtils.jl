@@ -40,10 +40,10 @@ end
 let
 	n_frames = 200
 	time_steps = range(1, n_frames, length = 6)
-	width = 500
-	height = 500
+	width = 400
+	height = 400
 	
-	v = Video(500, 500)
+	v = Video(300, 300)
 	Background(1:n_frames, ground(mywhite))
 	make_ner(
 		n_frames = n_frames, 
@@ -63,7 +63,7 @@ let
 	width = 500
 	height = 500
 	
-	v = Video(500, 500)
+	v = Video(400, 400)
 	Background(1:n_frames, ground(mywhite))
 	make_ner(
 		n_frames=n_frames, 
@@ -71,7 +71,7 @@ let
 		height=height, 
 		words_in=["machine"],
 		words_out = [
-			"coating machine", "coating device", "point scores", "computer", "car"
+			"coating machine", "coating device", "knife", "computer", "car"
 		],
 		margin=50
 	)
@@ -80,8 +80,9 @@ end
 
 # ╔═╡ 67328dd2-4a0b-428c-a4ff-687d76498b69
 function postprocess_frame(frame_image, frame, frames)
+	T = typeof(frame_image[1,1])
 	g(x) = RGB(1 - x.r, 1 - x.g, 1 - x.b)
-	g.(frame_image)
+	convert.(T, g.(frame_image))
 end
 
 # ╔═╡ c12aff7b-e936-4e8e-98e4-7f8acde3cf35
@@ -132,11 +133,6 @@ function make_neural_net(; n_frames, width, height, margin, n_layers, maxneurons
 			end
 		end
 	)
-end
-
-# ╔═╡ 60b49d2c-e5cd-44d0-a1f4-a842236ff189
-function logistic(x)
-	ℯ^x/(1 + ℯ^x)
 end
 
 # ╔═╡ f429a061-3ed7-41df-b39d-0989bf477da9
@@ -296,7 +292,10 @@ begin
 	) for (x, y) in zip(barpoints, [80, 40, 12, 200, 60, 20])]
 	
 	
-	render(nn_video, pathname="../output/bert_lasso.gif")
+	render(
+		nn_video, pathname="../output/bert_lasso.mp4", 
+		postprocess_frame=postprocess_frame
+	)
 end
 
 # ╔═╡ Cell order:
@@ -307,6 +306,5 @@ end
 # ╟─21e78860-f28b-4475-b38f-01e4ee7d802e
 # ╟─553312d1-74ef-4edc-b293-caf06a65b71b
 # ╠═67328dd2-4a0b-428c-a4ff-687d76498b69
-# ╠═c12aff7b-e936-4e8e-98e4-7f8acde3cf35
-# ╠═60b49d2c-e5cd-44d0-a1f4-a842236ff189
+# ╟─c12aff7b-e936-4e8e-98e4-7f8acde3cf35
 # ╠═f429a061-3ed7-41df-b39d-0989bf477da9

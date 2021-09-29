@@ -68,10 +68,8 @@ begin
     act!(circ1, Action(anim_rotate(1π)))
 
     function postprocess_frame(frame_image, idx, frames)
-        # frame_image = collect(imrotate(frame_image, ((idx-1)/length(frames)) * 2π))
-        # frame_image
-        # g(x) = RGB(1-x.r, 1-x.g, 1-x.b)
         g(x) = RGBA(x.r, x.g, x.b, 0.6)
+		
         frame_image = g.(frame_image)
         if idx <= 50
             frame_image
@@ -90,11 +88,14 @@ begin
         myvideo,
         pathname = "output.gif",
         # tempdirectory="temp",
-        # postprocess_frame = postprocess_frame,
-        postprocess_frames_flow = postprocess_frames_flow,
+        postprocess_frame = postprocess_frame,
+        # postprocess_frames_flow = postprocess_frames_flow,
         # liveview=true
     )
 end
+
+# ╔═╡ 00849422-a792-46c4-9623-06b3ee0a3750
+N0f8
 
 # ╔═╡ 48f6d415-6721-49bf-9390-fbae186f1c84
 @btime let
@@ -117,4 +118,5 @@ end
 # ╠═01735a86-406a-46a8-a3c6-d3b767eaee74
 # ╠═a2878ded-81f8-4e7d-91da-b73ace797dda
 # ╠═38286288-86ff-4cee-9c58-296d0ed3c120
+# ╠═00849422-a792-46c4-9623-06b3ee0a3750
 # ╠═48f6d415-6721-49bf-9390-fbae186f1c84
