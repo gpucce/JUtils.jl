@@ -297,7 +297,7 @@ function pendulum(;
                 Luxor.arrow(
                     endpoint,
                     endpoint +
-                    100 *
+                    radius / 3 *
                     cos(motion(t) - π / 2) *
                     Point(sin(motion(t) - π / 2), cos(motion(t) - π / 2)),
                     linewidth = 2,
